@@ -1,0 +1,5 @@
+/build/*
+*.pdf
+*/.vscode
+/Client/build/*
+/Server/build/*
