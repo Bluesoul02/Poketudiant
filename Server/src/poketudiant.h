@@ -1,3 +1,6 @@
+#include <stdbool.h>
+#include <stdlib.h>
+
 typedef struct _poketudiant {
     char * name;
     // attacks list

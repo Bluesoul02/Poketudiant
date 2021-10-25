@@ -1,4 +1,3 @@
-#include <stdbool.h>
 #include "poketudiant.h"
 
 Poketudiant* Poketudiant__create() {
@@ -7,7 +6,7 @@ Poketudiant* Poketudiant__create() {
 }
 
 void Poketudiant__destroy(Poketudiant self) {
-    free(self);
+    //free(self);
 }
 
 char* Poketudiant__name(Poketudiant* self) {
