@@ -2,14 +2,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
-
 
 public class Client{
     private DatagramSocket socket;
     private InetAddress address;
 
-    private byte[] buf;
     private final static int PORT = 9000;
 
     public Client() throws IOException {
@@ -47,10 +44,4 @@ public class Client{
         socket.close();
     }
 
-    public static void main(String[] args) throws IOException {
-        Client c = new Client();
-        c.send("looking for poketudiant servers");
-        String recv = c.receive();
-        System.out.println(recv);
-    }
 }
