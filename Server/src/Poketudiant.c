@@ -1,6 +1,6 @@
 #include "poketudiant.h"
 
-Poketudiant* Poketudiant__create() {
+Poketudiant *Poketudiant__create() {
     Poketudiant *poketudiant = malloc(sizeof(Poketudiant));
     return poketudiant;
 }
