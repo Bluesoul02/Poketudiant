@@ -1,8 +1,9 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
 #include "server.h"
 #include "error.h"
-#include <stdio.h>
+#include "util_string.h"
 #define neterr_server_udp(srv, n) server_udp_close_and_free(srv), syserror(n);
 #define neterr_server_tcp(srv, n) server_tcp_destroy(srv),syserror(n);
 #define MAX 500
@@ -55,7 +56,7 @@ int server_udp_broadcast() {
     char buf[MAX];
     char *msg = NULL;
     memset(buf, 0, sizeof(char) * MAX);
-    ServerUdp server_udp = server_create_udp();
+    ServerUdp server_udp = server_udp_create();
     server_udp->server_udp_bind(server_udp, 9000);
     for (;;) {
         ssize_t n = server_udp->server_udp_receive(server_udp, buf, MAX);
@@ -77,7 +78,7 @@ static ssize_t server_tcp_receive(struct server_tcp* this,char*buf,size_t size){
     return recv(this->acceptedSocket, buf, size,0);
 }
 static void server_tcp_send(struct server_tcp* this,char*msg){
-    if (send(this->acceptedSocket, msg, strlen(msg), 0) == ERR) neterr_server(this, SEND_ERR);
+    if (send(this->acceptedSocket, msg, strlen(msg), 0) == ERR) neterr_server_tcp(this, SEND_ERR);
 }
 
 
@@ -86,7 +87,7 @@ static void server_tcp_bind(struct server_tcp* this,int port){
     this->servAddr.sin_addr.s_addr = INADDR_ANY;
     this->servAddr.sin_port = htons((uint16_t) port);
     if (bind(this->socket, (struct sockaddr *) &this->servAddr, sizeof(this->servAddr)) < 0) {
-        neterr_server(this, BINDING_ERR);
+        neterr_server_tcp(this, BINDING_ERR);
     }
 }
 
