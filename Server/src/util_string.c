@@ -1,5 +1,6 @@
 #include "util_string.h"
 #include <ctype.h>
+#include <string.h>
 
 char *ltrim(char *s) {
     while (isspace(*s))
