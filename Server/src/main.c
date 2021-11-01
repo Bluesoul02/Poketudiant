@@ -2,6 +2,8 @@
 #include <memory.h>
 #include "server.h"
 #include "util_string.h"
+#include "poketudiant.h"
+#include "jeu.h"
 #define MAX 500
 
 int main() {
@@ -21,5 +23,6 @@ int main() {
         
         server_udp->server_udp_send(server_udp, msg);
     }
+    readMap("../map.txt");
     return 0;
 }

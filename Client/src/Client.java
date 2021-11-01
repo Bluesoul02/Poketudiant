@@ -25,6 +25,7 @@ public class Client{
         address = InetAddress.getByName(hostname);
         socket.setBroadcast(true);
 		listOfInetAddress = new ArrayList<InetAddress>();
+		send = new DatagramPacket(SEARCH_SERVER.getBytes(), SEARCH_SERVER.getBytes().length, address, PORT);
 		receive = new DatagramPacket(new byte[SIZE], SIZE, address, PORT);
     }
 
