@@ -1,17 +1,25 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+typedef enum {NOISY, LAZY, MOTIVATED, TEACHER} Type;
+
+typedef struct attack {
+    char *name;
+    Type type;
+    int power;
+} Attack;
+
 typedef struct _poketudiant {
     char * name;
-    // attacks list
+    Attack attacks[2];
     int attack;
     int defence;
     int maxHP;
     int currentHP;
-    // type
+    Type type;
     bool isCatchable;
     bool isReleasable;
-    //Poketudiant evolution;
+    struct _poketudiant *evolution;
     int level;
     int exp;
     int evolutionLevel;
