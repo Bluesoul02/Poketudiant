@@ -8,16 +8,23 @@ import java.util.List;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class Client{
-    private DatagramSocket socket;
-	private DatagramPacket receive;
+private DatagramSocket socket;
+private DatagramPacket receive;
 	private DatagramPacket send;
     private InetAddress address;
 	private List<InetAddress> listOfInetAddress;
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
 	private static final String ANSWER_SEARCH_SERVER = "i'm a poketudiant server";
-    private final static int PORT = 9000;
+    private final static int PORTUDP = 9000;
+    private final static int PORTTCP = 9001;
     private final static int SIZE = 500;
 
     public Client(String hostname) throws IOException {
@@ -25,8 +32,8 @@ public class Client{
         address = InetAddress.getByName(hostname);
         socket.setBroadcast(true);
 		listOfInetAddress = new ArrayList<InetAddress>();
-		send = new DatagramPacket(SEARCH_SERVER.getBytes(), SEARCH_SERVER.getBytes().length, address, PORT);
-		receive = new DatagramPacket(new byte[SIZE], SIZE, address, PORT);
+		send = new DatagramPacket(SEARCH_SERVER.getBytes(), SEARCH_SERVER.getBytes().length, address, PORTUDP);
+		receive = new DatagramPacket(new byte[SIZE], SIZE, address, PORTUDP);
     }
 
 	public List<InetAddress> searchServer() {
@@ -53,6 +60,33 @@ public class Client{
 		}
 
 		return Collections.emptyList();
+	}
+
+	public void connectServer() {
+		try (Socket s = new Socket(InetAddress.getByName("localhost"), PORTTCP)) {
+			OutputStream output = s.getOutputStream();
+			InputStream input = s.getInputStream();
+
+			PrintWriter writer = new PrintWriter(output, true);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+			writer.println("require game list");
+			writer.flush();
+
+			System.out.println("require game list");
+
+			List<String> array = new ArrayList<>();
+			String str = reader.readLine();
+			while (str != null) {
+				array.add(str);
+				str = reader.readLine();
+			}
+
+			System.out.println(array);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
     public void close() {

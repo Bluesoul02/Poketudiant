@@ -15,6 +15,7 @@ public class Main {
 			Client client = new Client("255.255.255.255");
 			List<InetAddress> list = client.searchServer();
 			System.out.println(list);
+			client.connectServer();
 		} catch (SocketException | UnknownHostException e) {
 			e.printStackTrace();
 		}

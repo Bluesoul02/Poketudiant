@@ -121,24 +121,30 @@ int server_tcp_connexion() {
     memset(buf,0,sizeof(char)*MAX);
     
     ServerTcp server_tcp=server_tcp_create();
-    server_tcp->server_tcp_bind(server_tcp,1344);
+    server_tcp->server_tcp_bind(server_tcp,9001);
     
     if(listen(server_tcp->socket,SOMAXCONN)==-1) exit(1);
 
-    printf("Listen OK\n"); 
-    server_tcp->acceptedSocket=accept(server_tcp->socket,(struct sockaddr*)&server_tcp->clientAddr,&server_tcp->len);
-        
-    for(;;) {   
-        printf("Accepted\n");
+    printf("Listening...\n");
+    while(1) {
+        server_tcp->acceptedSocket=accept(server_tcp->socket,(struct sockaddr*)&server_tcp->clientAddr,&server_tcp->len);
+        int pid = fork();
+        if(pid == ERR) perror("Fork :"), exit(1);
+        if(pid == 0) {
+            close(server_tcp->socket);
+            for(;;) {
+                printf("Accepted\n");
 
-        ssize_t n=server_tcp->server_tcp_receive(server_tcp, buf, MAX);
-        buf[n]='\0';
+                ssize_t n=server_tcp->server_tcp_receive(server_tcp, buf, MAX);
+                buf[n]='\0';
 
-        char* str="require game list";
+                char* str="require game list";
 
-        if(strncmp(buf,str,strlen(str))==0) msg="number of games N - players in each game";
-        else msg="Unknown command";
-        server_tcp->server_tcp_send(server_tcp, msg);
+                if(strncmp(buf,str,strlen(str))==0) msg="number of games N - players in each game";
+                else msg="Unknown command";
+                server_tcp->server_tcp_send(server_tcp, msg);
+            }
+        } else close(server_tcp->acceptedSocket);
     }
     server_tcp_destroy(server_tcp);
     return 0;
