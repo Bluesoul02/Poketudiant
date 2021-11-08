@@ -62,8 +62,8 @@ private DatagramPacket receive;
 		return Collections.emptyList();
 	}
 
-	public void connectServer() {
-		try (Socket s = new Socket(InetAddress.getByName("localhost"), PORTTCP)) {
+	public void connectServer(String hostname) {
+		try (Socket s = new Socket(InetAddress.getByName(hostname), PORTTCP)) {
 			OutputStream output = s.getOutputStream();
 			InputStream input = s.getInputStream();
 

@@ -13,9 +13,9 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		try {
 			Client client = new Client("255.255.255.255");
-			List<InetAddress> list = client.searchServer();
+			List<InetAddress> list = client.searchServer(); // List of servers
 			System.out.println(list);
-			client.connectServer();
+			client.connectServer(list.get(0).getHostAddress()); // Connection to a server
 		} catch (SocketException | UnknownHostException e) {
 			e.printStackTrace();
 		}

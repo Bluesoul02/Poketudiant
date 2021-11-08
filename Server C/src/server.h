@@ -9,7 +9,7 @@
 
 struct server_udp{
     int socket;
-    struct sockaddr_in servAddr;
+    struct sockaddr_in servAddr; // Local address of the socket
     struct sockaddr_in clientAddr;
     socklen_t clientLen;
 

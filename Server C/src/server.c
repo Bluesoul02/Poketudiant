@@ -23,9 +23,9 @@ static void server_udp_send(struct server_udp *this, char *msg) {
 }
 
 void server_udp_bind(struct server_udp *this, int port) {
-    this->servAddr.sin_family = AF_INET;
-    this->servAddr.sin_addr.s_addr = INADDR_ANY;
-    this->servAddr.sin_port = htons((uint16_t)port);
+    this->servAddr.sin_family = AF_INET; // Address family
+    this->servAddr.sin_addr.s_addr = INADDR_ANY; // Host IP address - s_addr contains the host interface address
+    this->servAddr.sin_port = htons((uint16_t)port); // Numero of port
     this->clientLen = sizeof(struct sockaddr_in);
     if (bind(this->socket, (struct sockaddr *)&this->servAddr, sizeof(this->servAddr)) < 0) neterr_server_udp(this, BINDING_ERR);
 }
@@ -78,7 +78,9 @@ static ssize_t server_tcp_receive(struct server_tcp* this,char*buf,size_t size){
     return recv(this->acceptedSocket, buf, size,0);
 }
 static void server_tcp_send(struct server_tcp* this,char*msg){
-    if (send(this->acceptedSocket, msg, strlen(msg), 0) == ERR) neterr_server_tcp(this, SEND_ERR);
+    int caca;
+    if (caca = send(this->acceptedSocket, msg, strlen(msg), 0) == ERR) neterr_server_tcp(this, SEND_ERR);
+    printf("%d\n",caca);
 }
 
 
@@ -139,8 +141,9 @@ int server_tcp_connexion() {
                 buf[n]='\0';
 
                 char* str="require game list";
+                printf("%s",buf);
 
-                if(strncmp(buf,str,strlen(str))==0) msg="number of games N - players in each game";
+                if(strncmp(buf,str,strlen(str))==0) msg="number of games N - players in each game\n";
                 else msg="Unknown command";
                 server_tcp->server_tcp_send(server_tcp, msg);
             }
