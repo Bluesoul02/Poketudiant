@@ -5,9 +5,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,9 +13,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class Client{
-private DatagramSocket socket;
-private DatagramPacket receive;
+public class Client {
+	private DatagramSocket socket;
+	private DatagramPacket receive;
 	private DatagramPacket send;
     private InetAddress address;
 	private List<InetAddress> listOfInetAddress;
