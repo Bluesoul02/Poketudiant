@@ -1,5 +1,6 @@
 /build/*
 *.pdf
 */.vscode
-/Client/build/*
+/Client/bin/*
 /Server/build/*
+serverpoketudiant

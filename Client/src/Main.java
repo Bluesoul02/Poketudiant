@@ -1,12 +1,7 @@
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 public class Main {
@@ -15,7 +10,8 @@ public class Main {
 			Client client = new Client("255.255.255.255");
 			List<InetAddress> list = client.searchServer(); // List of servers
 			System.out.println(list);
-			client.connectServer(list.get(0).getHostAddress()); // Connection to a server
+			if (list.size() != 0)
+				client.connectServer(list.get(0).getHostAddress()); // Connection to a server
 		} catch (SocketException | UnknownHostException e) {
 			e.printStackTrace();
 		}

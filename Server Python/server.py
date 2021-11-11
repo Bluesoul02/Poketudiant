@@ -109,7 +109,7 @@ def udpConnexion():
         while True:
             data, client = s.recvfrom(4096)
             print(f'Données : {data.decode("utf-8")} reçues de {client}')
-            s.sendto("i'm a poketudiant server.".encode('utf-8'),client)
+            s.sendto("i'm a poketudiant server".encode('utf-8'),client)
 
 def tcpConnexion():
     ip = ""
