@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -21,6 +20,7 @@ public class Client {
 	private DatagramPacket send;
     private InetAddress address;
 	private List<InetAddress> listOfInetAddress;
+	private List<String> serverOutput;
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
 	private static final String ANSWER_SEARCH_SERVER = "i'm a poketudiant server";
     private final static int PORTUDP = 9000;
@@ -28,6 +28,7 @@ public class Client {
     private final static int SIZE = 500;
 
     public Client(String hostname) throws IOException {
+		serverOutput = new ArrayList<>();
         socket = new DatagramSocket();
         address = InetAddress.getByName(hostname);
         socket.setBroadcast(true);
@@ -72,23 +73,22 @@ public class Client {
 			writer.println("require game list");
 			writer.flush();
 
-			List<String> array = new ArrayList<>();
 			String str = reader.readLine();
 			if(str.contains("number of games")) {
 				int gamesNb = Integer.parseInt(str.split(" ")[3]);
 				for (int i = 0; i < gamesNb; i++) {
 					str = reader.readLine();
-					array.add(str);
+					serverOutput.add(str);
 				}
 			}
 
-			for (int i = 0; i < array.size(); i++) System.out.println(array.get(i));
+			for (int i = 0; i < serverOutput.size(); i++) System.out.println(serverOutput.get(i));
 
 			int choix;
 			Scanner sc = new Scanner(System.in);
 			System.out.println("Choose an option :");
 			choix = sc.nextInt();
-			String msg = "join game " + array.get(choix).split(" ",2)[1];
+			String msg = "join game " + serverOutput.get(choix).split(" ",2)[1];
 			msg = msg.substring(0, msg.lastIndexOf(" "));
 			System.out.println(msg);
 			writer.println(msg);
@@ -96,7 +96,7 @@ public class Client {
 
 			str = reader.readLine();
 			while (str != null) {
-				array.add(str);
+				serverOutput.add(str);
 				System.out.println(str);
 				str = reader.readLine();
 			}
@@ -105,6 +105,10 @@ public class Client {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public List<String> getServerOutput() {
+		return serverOutput;
 	}
 
     public void close() {
