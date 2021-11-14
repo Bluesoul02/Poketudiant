@@ -11,7 +11,7 @@ public class Main {
 			List<InetAddress> list = client.searchServer(); // List of servers
 			System.out.println(list);
 			if (list.size() != 0)
-				client.connectServer(list.get(0).getHostAddress()); // Connection to a server
+				client.connectServer(list.get(0).getHostAddress()); // Connection to the first server
 		} catch (SocketException | UnknownHostException e) {
 			e.printStackTrace();
 		}

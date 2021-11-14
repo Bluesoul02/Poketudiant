@@ -74,6 +74,7 @@ public class Client {
 
 			List<String> array = new ArrayList<>();
 			String str = reader.readLine();
+			System.out.println(str); // Print the number of games
 			if(str.contains("number of games")) {
 				int gamesNb = Integer.parseInt(str.split(" ")[3]);
 				for (int i = 0; i < gamesNb; i++) {
