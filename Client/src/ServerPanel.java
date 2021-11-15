@@ -13,8 +13,10 @@ public class ServerPanel extends JPanel {
         add(gameList);
     }
 
-    public void showGameList(Client client) {
-        gameList.showGameList(client);
+    public void showGameList() {
+        gameList.showGameList();
+        revalidate();
+        repaint();
     } 
 
 }

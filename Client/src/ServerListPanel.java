@@ -36,13 +36,14 @@ public class ServerListPanel extends JPanel{
         this.add(Box.createRigidArea(new Dimension(0, 15)));
         add(refresh);
         List<InetAddress> list = client.searchServer(); // List of servers
+        JButton button;
         for (InetAddress inetAddress : list) {
             this.add(Box.createRigidArea(new Dimension(0, 15)));
-            JButton button = new JButton(inetAddress.toString());
+            button = new JButton(inetAddress.toString());
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     client.connectServer(inetAddress.getHostAddress());
-                    ((ServerPanel) getParent()).showGameList(client);
+                    ((ServerPanel) getParent()).showGameList();
                 }
             });
             button.setAlignmentX(CENTER_ALIGNMENT);

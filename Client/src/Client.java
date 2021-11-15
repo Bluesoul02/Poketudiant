@@ -17,7 +17,10 @@ public class Client {
 	private DatagramSocket socket;
 	private DatagramPacket receive;
 	private DatagramPacket send;
+	private Socket s;
     private InetAddress address;
+	private PrintWriter writer;
+	private BufferedReader reader;
 	private List<InetAddress> listOfInetAddress;
 	private List<String> serverOutput;
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
@@ -62,12 +65,13 @@ public class Client {
 	}
 
 	public void connectServer(String hostname) {
-		try (Socket s = new Socket(InetAddress.getByName(hostname), PORTTCP)) {
+		try {
+			s = new Socket(InetAddress.getByName(hostname), PORTTCP);
 			OutputStream output = s.getOutputStream();
 			InputStream input = s.getInputStream();
 
-			PrintWriter writer = new PrintWriter(output, true);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+			writer = new PrintWriter(output, true);
+			reader = new BufferedReader(new InputStreamReader(input));
 
 			writer.println("require game list");
 			writer.flush();
@@ -105,6 +109,11 @@ public class Client {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean joinGame(String gameName) throws IOException {
+		writer.println("join game " + gameName);
+		return reader.readLine() == "game joined";
 	}
 
 	public List<String> getServerOutput() {
