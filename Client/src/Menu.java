@@ -2,7 +2,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
 import javax.swing.Box;
@@ -20,12 +19,12 @@ public class Menu extends JPanel {
         JButton serverList = new JButton("Server list");
         serverList.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ServerListPanel servListPane;
+                ServerPanel servPane;
                 try {
-                    servListPane = new ServerListPanel(new Client("255.255.255.255"));
-                    ((JFrame) getParent().getParent().getParent()).setContentPane(servListPane);
-                    servListPane.revalidate();
-                    servListPane.repaint();
+                    servPane = new ServerPanel(new Client("255.255.255.255"));
+                    ((JFrame) getParent().getParent().getParent()).setContentPane(servPane);
+                    servPane.revalidate();
+                    servPane.repaint();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }

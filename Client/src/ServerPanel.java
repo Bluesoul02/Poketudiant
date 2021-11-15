@@ -1,0 +1,20 @@
+import javax.swing.JPanel;
+import java.awt.GridLayout;
+
+public class ServerPanel extends JPanel {
+    private GameListPanel gameList;
+    
+    public ServerPanel(Client client) {
+        GridLayout gl = new GridLayout();
+        setLayout(gl);
+        JPanel serverList = new ServerListPanel(client);
+        gameList = new GameListPanel(client);
+        add(serverList);
+        add(gameList);
+    }
+
+    public void showGameList(Client client) {
+        gameList.showGameList(client);
+    } 
+
+}

@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 import java.net.SocketTimeoutException;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -85,31 +84,31 @@ public class Client {
 
 			for (int i = 0; i < serverOutput.size(); i++) System.out.println(serverOutput.get(i));
 
-			int choix;
-			Scanner sc = new Scanner(System.in);
-			System.out.println("Choose an option :");
-			choix = sc.nextInt();
-			String msg = "join game " + serverOutput.get(choix).split(" ",2)[1];
-			msg = msg.substring(0, msg.lastIndexOf(" "));
-			System.out.println(msg);
-			writer.println(msg);
-			writer.flush();
+			// int choix;
+			// Scanner sc = new Scanner(System.in);
+			// System.out.println("Choose an option :");
+			// choix = sc.nextInt();
+			// String msg = "join game " + serverOutput.get(choix).split(" ",2)[1];
+			// msg = msg.substring(0, msg.lastIndexOf(" "));
+			// System.out.println(msg);
+			// writer.println(msg);
+			// writer.flush();
 
-			str = reader.readLine();
-			while (str != null) {
-				serverOutput.add(str);
-				System.out.println(str);
-				str = reader.readLine();
-			}
+			// str = reader.readLine();
+			// while (str != null) {
+			// 	serverOutput.add(str);
+			// 	System.out.println(str);
+			// 	str = reader.readLine();
+			// }
 
-			sc.close();
+			// sc.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public List<String> getServerOutput() {
-		return serverOutput;
+		return this.serverOutput;
 	}
 
     public void close() {

@@ -1,4 +1,5 @@
 import java.awt.event.ActionListener;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
@@ -14,12 +15,26 @@ import javax.swing.JPanel;
 public class ServerListPanel extends JPanel{
     
     public ServerListPanel(Client client) {
+        setBackground(Color.decode("#1e3d59"));
         BoxLayout bl = new BoxLayout(this, BoxLayout.PAGE_AXIS);
         this.setLayout(bl);
+        refreshServerList(client);
+    }
 
+    public void refreshServerList(Client client) {
+        removeAll();
         JLabel jlabel = new JLabel("Liste des serveurs disponibles :");
         jlabel.setAlignmentX(CENTER_ALIGNMENT);
+        jlabel.setForeground(Color.WHITE);
         add(jlabel);
+        JButton refresh = new JButton("refresh");
+        refresh.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                refreshServerList(client);
+            }
+        });
+        this.add(Box.createRigidArea(new Dimension(0, 15)));
+        add(refresh);
         List<InetAddress> list = client.searchServer(); // List of servers
         for (InetAddress inetAddress : list) {
             this.add(Box.createRigidArea(new Dimension(0, 15)));
@@ -27,10 +42,13 @@ public class ServerListPanel extends JPanel{
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     client.connectServer(inetAddress.getHostAddress());
+                    ((ServerPanel) getParent()).showGameList(client);
                 }
             });
             button.setAlignmentX(CENTER_ALIGNMENT);
             add(button);
         }
+        revalidate();
+        repaint();
     }
 }
