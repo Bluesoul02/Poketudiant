@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import socket, _thread, select, enum
+import socket, _thread, select, enum, random
 
 class Player:
     def __init__(self, client, x, y, nbRival):
@@ -9,7 +9,70 @@ class Player:
         self.y  = y
         self.nbRival = nbRival
         self.poketudiants = []
+
+    def moveLeft(self):
+        if self.x > 0:
+            self.x -= 1
+            return True
+        return False
+
+    def moveRight(self, game):
+        if self.x < (game.width - 1):
+            self.x += 1
+            return True
+        return False
+
+    def moveUp(self):
+        if self.y > 0:
+            self.y += 1
+            return True
+        return False
+
+    def moveDown(self, game):
+        if self.x < (game.height - 1):
+            self.x -= 1
+            return True
+        return False
     
+    def sendPoketudiants(self):
+        self.client.send("team contains " + str(len(self.poketudiants))).encode('utf-8')
+        for p in self.poketudiants:
+            poketudiant = str(p.variety) + " " + str(p.type) + " " + str(p.level) + " " + str(p.exp) + " " +  str(p.expLevel - p.exp) + " " + str(p.currentHP) + " " + str(p.maxHP) + " " + str(p.attack) + " " + str(p.defence)
+            for a in p.attacks:
+                poketudiant += " " + str(a.name) + " " + str(a.type)
+            self.client.send(poketudiant).encode('utf-8')
+        
+    def poketudiantMoveUp(self, indice):
+        if indice >= len(self.poketudiants) or indice == 0:
+            return False
+        temp = self.poketudiants[indice-1]
+        self.poketudiants[indice-1] = self.poketudiants[indice]
+        self.poketudiants[indice] = temp
+        return True
+
+    def poketudiantMoveDown(self, indice):
+        if indice >= len(self.poketudiants) or indice == 2:
+            return False
+        temp = self.poketudiants[indice+1]
+        self.poketudiants[indice+1] = self.poketudiants[indice]
+        self.poketudiants[indice] = temp
+        return True
+
+    def poketudiantFree(self, indice):
+        if len(self.poketudiants) == 0 or indice > (len(self.poketudiants) - 1):
+            return False
+        self.poketudiants.pop(indice)
+        return True
+
+    def sendMsgChat(self, clients, msg):
+        message = "rival message " + self.client.getsockname()[0] + " " + self.client.getsockname()[1] + " : " + msg
+        for c in clients:
+            c.send((message).encode('utf-8'))
+    
+    def healPoketudiants(self):
+        for p in self.poketudiants:
+            p.getHealth()
+
     def __str__(self):
         return "%s" % (self.client)
  
@@ -18,6 +81,13 @@ class Type(enum.Enum):
     LAZY = 2
     MOTIVATED = 3
     TEACHER = 4
+
+class CaseType(enum.Enum):
+    NEUTRAL = 1
+    HEALTH = 2
+    GRASS = 3
+    POKETUDIANT = 4
+    RIVAL = 5
 
 class Map:
     def __init__(self, map):
@@ -32,6 +102,41 @@ class Game:
         self.map = ""
         self.players = []
     
+    def getTypeCase(self, player):
+        return self.map.map.split("\n")[player.y][player.x]
+    
+    def playersPos(self, player):
+        for p in player:
+            if (p != player) and (player.x == p.x) and (player.y == p.y):
+                return p
+        return False
+
+    def checkPosition(self, player): # check if the player is on the poketudiant center, maybe start a fight with a poketudiant (percentage) or a player
+        pos = self.getTypeCase(player)
+        p=self.playersPos(player)
+        if p:
+            CaseType.RIVAL
+        elif pos == "+":
+            player.healPoketudiants()
+            return CaseType.HEALTH
+        elif pos == "*":
+            if random.randint(0,9) <= 3:
+                return CaseType.POKETUDIANT
+            return CaseType.GRASS
+        return CaseType.NEUTRAL
+    
+    def sendMap(self, player):
+        map = self.map
+        player.client.send("map " + str(map.width) + " " + str(map.height)).encode('utf-8')
+        mapSplit = map.map.split("\n")
+        for p in self.players:
+            if p.player.client == player.client:
+                mapSplit[p.x] = charReplacer(mapSplit[p.x], str(0), p.y)
+            else:
+                mapSplit[p.x] = charReplacer(mapSplit[p.x], str(p.nbRival), p.y)
+        for line in mapSplit:
+            player.client.send((line + "\n").encode('utf-8'))
+            
     def __str__(self):
         return "%d %s" % (len(self.players), self.name)
 
@@ -60,60 +165,36 @@ class Poketudiant:
         self.isReleasable = isReleasable
         self.evolution = evolution
         self.evolutionLevel = evolutionLevel
+
+    def getHealth(self):
+        self.currentHP = self.maxHP
     
     def __str__(self):
-        return "%s" % (self.variety, self.type, self.level, self.exp,  xp-next-lvl, self.currentHP, self.maxHP, self.attack, self.defence)
+        return "%s" % (self.variety, self.type, self.level, self.exp, self.expLevel - self.exp, self.currentHP, self.maxHP, self.attack, self.defence)
 
 games = []
 maxPlayer = 4
 
-def sendMsgChat(clients, client, msg):
-    message = client.getsockname()[0] + " " + client.getsockname()[1] + " : " + msg
+def sendMapForAll(game, clients):
     for c in clients:
-        c.send((message).encode('utf-8'))
+        game.sendMap(getPlayer(game, c))
 
-def moveLeft(player):
-    if player.x > 0:
-        player.x -= 1
+def getPlayer(game, client):
+    for p in game.players:
+        if p.client == client:
+            return p
 
-def moveRight(player, game):
-    if player.x < (game.width - 1):
-        player.x += 1
-
-def moveUp(player):
-    if player.y > 0:
-        player.y += 1
-
-def moveDown(player, game):
-    if player.x < (game.height - 1):
-        player.x -= 1
-
-def poketudiantMoveUp(poketudiants, indice):
-    if indice >= len(poketudiants) or indice == 0:
-        return False
-    temp = poketudiants[indice-1]
-    poketudiants[indice-1] = poketudiants[indice]
-    poketudiants[indice] = temp
-
-def poketudiantMoveDown(poketudiants, indice):
-    if indice >= len(poketudiants) or indice == 2:
-        return False
-    temp = poketudiants[indice+1]
-    poketudiants[indice+1] = poketudiants[indice]
-    poketudiants[indice] = temp
-
-def poketudiantFree(poketudiants, indice):
-    if len(poketudiants) == 0 or indice > (len(poketudiants) - 1):
-        return False
-    poketudiants.pop(indice)
-
-def sendPoketudiants(player):
-    player.client.send("team contains " + str(len(player.poketudiants))).encode('utf-8')
-    for p in player.poketudiants:
-        poketudiant = str(p.variety) + " " + str(p.type) + " " + str(p.level) + " " + str(p.exp) + " " +  str(p.expLevel - p.exp) + " " + str(p.currentHP) + " " + str(p.maxHP) + " " + str(p.attack) + " " + str(p.defence)
-        for a in p.attacks:
-            poketudiant += " " + str(a.name) + " " + str(a.type)
-        p.client.send(poketudiant).encode('utf-8')
+def movement(data, player, game):
+    move = data.split(" ")[2]
+    if move == "left":
+        return player.moveLeft()
+    elif move == "right":
+        return player.moveRight(game)
+    elif move == "down":
+        return player.moveDown(game)
+    elif move == "up":
+        return player.moveUp()
+    return False
 
 def gameNameExists(name):
     for g in games:
@@ -130,18 +211,6 @@ def charReplacer(s, newstring, index, nofail=False):
         return s + newstring
     return s[:index] + newstring + s[index + 1:]
 
-def sendMap(client, game):
-    map = game.map
-    client.send("map " + str(map.width) + " " + str(map.height)).encode('utf-8')
-    mapSplit = map.map.split("\n")
-    for p in game.players:
-        if p.client == client:
-            mapSplit[p.x] = charReplacer(mapSplit[p.x], str(0), p.y)
-        else:
-            mapSplit[p.x] = charReplacer(mapSplit[p.x], str(p.nbRival), p.y)
-    for line in mapSplit:
-        client.send((line + "\n").encode('utf-8'))
-
 def initializeMap(game):
     fd = open('../map.txt', 'r') # initialize the game map
     game.map = Map(fd.read())
@@ -152,6 +221,23 @@ def initializeMap(game):
     game.map.height = height
     game.map.spawns = [(0,0), (width-1,0), (0,height-1), (width-1,height-1)]
     fd.close()
+
+def poketudiantManage(player, indice, text):
+    if (indice < 0) or (indice > 2):
+        return False
+    if text == "move up":
+        return player.poketudiantMoveUp(indice)
+    elif text == "move down":
+        return player.poketudiantMoveDown(indice)
+    elif text == "free":
+        return player.poketudiantFree(indice)
+    return False
+
+def startPoketudiantFight():
+    print("Poketudiant Fight\n")
+
+def startRivalFight():
+    print("Rival Fight\n")
 
 def startGame(indice):
     game = games[indice]
@@ -167,7 +253,27 @@ def startGame(indice):
                         game.players.remove(p)
                         break
             else:
-                print(data)
+                dataDecoded = data.decode('utf-8')
+                dataDecoded = dataDecoded[:-1] if dataDecoded.endswith("\n") else dataDecoded
+                player = getPlayer(game,readable[0])
+                if (dataDecoded.startswith('map move')):
+                    if movement(dataDecoded,player,game):
+                        sendMapForAll(game,clients)
+                        pos = game.checkPosition(player)
+                        if pos == CaseType.POKETUDIANT:
+                            startPoketudiantFight()
+                        elif pos == CaseType.RIVAL:
+                            startRivalFight()
+                elif (dataDecoded.startswith('send message')):
+                    message = dataDecoded.split(" ",2)
+                    player.sendMsgChat(clients, message[2])
+                elif (dataDecoded.startswith('poketudiant')):
+                    datas = dataDecoded.split(" ", 2)
+                    if poketudiantManage(player, datas[1], datas[2]):
+                        player.sendPoketudiants()
+                elif (dataDecoded.startswith('exit game')):
+                    game.players.remove(getPlayer(readable[0]))
+                    listenToClient(readable[0])
         clients = list(map(lambda player: player.client, game.players))
     for c in clients: # no player in the game = close the game and connections
         c.close()
@@ -182,32 +288,37 @@ def createGame(client, data):
         game = Game(gameName)
         initializeMap(game)
         games.append(game)
-        # _thread.start_new_thread(startGame, (len(games) - 1,))
+        _thread.start_new_thread(startGame, (len(games) - 1,))
         client.send(("game created\n").encode('utf-8'))
         joinGame(client,gameName)
+        return True
     else:
         client.send(("cannot create game\n").encode('utf-8'))
+        return False
 
 def joinGame(client, gameName):
     for g in games:
         if g.name == str(gameName) and maxPlayer > len(g.players): # the name specified is the same and the game is not full
             g.players.append(Player(client, g.map.spawns[len(g.players) + 1][0], g.map.spawns[len(g.players) + 1][1], len(g.players) + 1))
             client.send(("game joined\n").encode('utf-8'))
+            g.sendMap(getPlayer(g, client)) # send the map to the player
             return True
     client.send(("cannot join game\n").encode('utf-8'))
+    return False
 
 def printGames(client):
     client.send(("number of games " + str(len(games)) + "\n").encode('utf-8'))
     for g in games:
         client.send((str(g) + "\n").encode('utf-8'))
     
-def listenToClient(client, address):
-    while(True):
+def listenToClient(client):
+    inGame = False
+    while(not inGame):
         try:
             readable,_,_= select.select([client], [], [], 60)
             data = client.recv(4096)
             if len(data) == 0:
-                print("Client %s déconnecté\n" % address[0])
+                print("Client %s déconnecté\n" % client)
                 return False
             dataDecoded = data.decode('utf-8')
             dataDecoded = dataDecoded[:-1] if dataDecoded.endswith("\n") else dataDecoded # remove the \n at the end of the line
@@ -215,13 +326,15 @@ def listenToClient(client, address):
             if (dataDecoded.startswith('require game list')): # print games to client
                 printGames(client)
             elif (dataDecoded.startswith('create game')): # the client wants to create a game
-                createGame(client, dataDecoded)
+                if createGame(client, dataDecoded):
+                    inGame = True
             elif (dataDecoded.startswith('join game')): # the client wants to join a game
                 gameDatas = dataDecoded.split(" ",2)
                 if len(gameDatas) != 3:
                     client.send(("cannot join game\n").encode('utf-8'))
                 else:
-                    joinGame(client, gameDatas[2])
+                    if joinGame(client, gameDatas[2]):
+                        inGame = True
         except:
             client.close()
             return False
@@ -253,7 +366,7 @@ def tcpConnexion():
             while True:
                 print(f'Le serveur écoute en TCP la connection du client n° {clientid}')
                 client, address = s.accept() # accept connection with a client
-                _thread.start_new_thread(listenToClient, (client,address)) # start a tcp connection with him
+                _thread.start_new_thread(listenToClient, (client)) # start a tcp connection with him
                 clientid += 1
         except KeyboardInterrupt:
             print('...Ok, c\'est terminé pour cette fois-ci...')
