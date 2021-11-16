@@ -212,6 +212,7 @@ def charReplacer(s, newstring, index, nofail=False):
     return s[:index] + newstring + s[index + 1:]
 
 def initializeMap(game):
+    #the path for the map must be absolute if we want to launch the from elsewhere then the directory Server Python  
     fd = open('../map.txt', 'r') # initialize the game map
     game.map = Map(fd.read())
     mapSplit = game.map.map.split("\n")
@@ -284,7 +285,7 @@ def createGame(client, data):
     if len(datas) != 3: # [create, game, game data]
         return False
     gameName = datas[2]
-    if not gameNameExists(gameName) and len(games)<4: # The game does not exists and the parameters are correct
+    if (not gameNameExists(gameName)) and len(games)<4: # The game does not exists and the parameters are correct
         game = Game(gameName)
         initializeMap(game)
         games.append(game)
@@ -355,7 +356,7 @@ def udpConnexion():
 
 def tcpConnexion():
     ip = ""
-    port = 9002
+    port = 9001
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((ip, port)) # affect the socket to the port 9001
@@ -366,7 +367,7 @@ def tcpConnexion():
             while True:
                 print(f'Le serveur écoute en TCP la connection du client n° {clientid}')
                 client, address = s.accept() # accept connection with a client
-                _thread.start_new_thread(listenToClient, (client)) # start a tcp connection with him
+                _thread.start_new_thread(listenToClient, (client,)) # start a tcp connection with him
                 clientid += 1
         except KeyboardInterrupt:
             print('...Ok, c\'est terminé pour cette fois-ci...')

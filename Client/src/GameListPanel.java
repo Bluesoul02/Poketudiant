@@ -6,6 +6,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,7 +25,9 @@ public class GameListPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                client.joinGame(serverOutput.get(counter));
+                if (client.joinGame(serverOutput.get(counter).split(" ")[1])) {
+                    // TODO launch game
+                }
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -58,7 +61,14 @@ public class GameListPanel extends JPanel {
         JButton createGame = new JButton("Create a game");
         createGame.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO create game
+                String gameName = JOptionPane.showInputDialog("Nom de la partie : ");
+                try {
+                    if (client.createGame(gameName)) {
+                        // TODO launch game
+                    }
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }     
             }
         });
         add(createGame);
