@@ -6,6 +6,7 @@ public class ServerPanel extends JPanel {
     
     public ServerPanel(Client client) {
         GridLayout gl = new GridLayout();
+        gl.setHgap(5);
         setLayout(gl);
         JPanel serverList = new ServerListPanel(client);
         gameList = new GameListPanel(client);

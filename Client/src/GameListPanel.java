@@ -39,10 +39,11 @@ public class GameListPanel extends JPanel {
     
     public GameListPanel(Client client) {
         this.client = client;
+        serverOutput = client.getServerOutput();
         setBackground(Color.decode("#f5f0e1"));
         BoxLayout bl = new BoxLayout(this, BoxLayout.PAGE_AXIS);
         this.setLayout(bl);
-        // showGameList(client);
+        //showGameList();
     }
 
     public void showGameList() {
@@ -51,9 +52,13 @@ public class GameListPanel extends JPanel {
         JLabel jlabel = new JLabel("Number of games : " + serverOutput.size());
         add(jlabel);
         JButton button;
+        String gameName;
+        String playerNb;
         for (int i = 0; i < serverOutput.size(); i++) {
             add(Box.createRigidArea(new Dimension(0, 15)));
-            button = new JButton();
+            gameName = serverOutput.get(i).split(" ")[1];
+            playerNb = serverOutput.get(i).split(" ")[0];
+            button = new JButton(gameName + " players : " + playerNb);
             button.addActionListener(new MyActionListener(i));
             add(button);
         }
@@ -61,7 +66,7 @@ public class GameListPanel extends JPanel {
         JButton createGame = new JButton("Create a game");
         createGame.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String gameName = JOptionPane.showInputDialog("Nom de la partie : ");
+                String gameName = JOptionPane.showInputDialog("Enter the game's name : ");
                 try {
                     if (client.createGame(gameName)) {
                         // TODO launch game

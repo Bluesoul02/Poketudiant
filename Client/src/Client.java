@@ -30,7 +30,6 @@ public class Client {
     private final static int SIZE = 500;
 
     public Client(String hostname) throws IOException {
-		serverOutput = new ArrayList<>();
         socket = new DatagramSocket();
         address = InetAddress.getByName(hostname);
         socket.setBroadcast(true);
@@ -67,6 +66,7 @@ public class Client {
 	public void connectServer(String hostname) {
 		try {
 			if (s != null) s.close();
+			serverOutput = new ArrayList<>();
 			s = new Socket(InetAddress.getByName(hostname), PORTTCP);
 			OutputStream output = s.getOutputStream();
 			InputStream input = s.getInputStream();

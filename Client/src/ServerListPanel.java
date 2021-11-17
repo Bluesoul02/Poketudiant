@@ -23,7 +23,7 @@ public class ServerListPanel extends JPanel{
 
     public void refreshServerList(Client client) {
         removeAll();
-        JLabel jlabel = new JLabel("Liste des serveurs disponibles :");
+        JLabel jlabel = new JLabel("List of available servers :");
         jlabel.setAlignmentX(CENTER_ALIGNMENT);
         jlabel.setForeground(Color.WHITE);
         add(jlabel);
