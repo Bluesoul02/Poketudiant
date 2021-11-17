@@ -66,6 +66,7 @@ public class Client {
 
 	public void connectServer(String hostname) {
 		try {
+			if (s != null) s.close();
 			s = new Socket(InetAddress.getByName(hostname), PORTTCP);
 			OutputStream output = s.getOutputStream();
 			InputStream input = s.getInputStream();
