@@ -30,6 +30,7 @@ public class Client {
     private final static int SIZE = 500;
 
     public Client(String hostname) throws IOException {
+		serverOutput = new ArrayList<>();
         socket = new DatagramSocket();
         address = InetAddress.getByName(hostname);
         socket.setBroadcast(true);
@@ -66,7 +67,7 @@ public class Client {
 	public void connectServer(String hostname) {
 		try {
 			if (s != null) s.close();
-			serverOutput = new ArrayList<>();
+			serverOutput.clear();
 			s = new Socket(InetAddress.getByName(hostname), PORTTCP);
 			OutputStream output = s.getOutputStream();
 			InputStream input = s.getInputStream();
@@ -120,6 +121,24 @@ public class Client {
 	public boolean joinGame(String gameName) throws IOException {
 		writer.println("join game " + gameName);
 		return reader.readLine().equals("game joined");
+	}
+
+	public int readMap() throws IOException {
+		String str = reader.readLine();
+		if (str.split(" ")[0].equals("map")) {
+			int width = Integer.parseInt(str.split(" ")[1]);
+			int height = Integer.parseInt(str.split(" ")[2]);
+			for (int i = 0; i < height; i++) {
+				serverOutput.add(reader.readLine());
+				System.out.println(serverOutput.get(i));
+			}
+			return width;
+		}
+		return -1;
+	}
+
+	public void emptyList() {
+		serverOutput.clear();
 	}
 
 	public List<String> getServerOutput() {

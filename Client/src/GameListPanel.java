@@ -30,8 +30,6 @@ public class GameListPanel extends JPanel {
                     GameFrame.getInstance().setContentPane(game);
                     game.repaint();
                     game.revalidate();
-                } else {
-                    System.out.println("oui");
                 }
             } catch (IOException e1) {
                 e1.printStackTrace();
@@ -78,6 +76,8 @@ public class GameListPanel extends JPanel {
                         GameFrame.getInstance().setContentPane(game);
                         game.revalidate();
                         game.repaint();
+                    } else {
+                        System.out.println("pb create");
                     }
                 } catch (IOException e1) {
                     e1.printStackTrace();
