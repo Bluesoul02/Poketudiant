@@ -247,7 +247,9 @@ def startRivalFight():
 def startGame(indice):
     game = games[indice]
     clients = list(map(lambda player: player.client, game.players))
-    while(clients):
+    while(True):
+        while(not clients):
+            clients = list(map(lambda player: player.client, game.players))
         readable,_,_= select.select(clients, [], [], 10)
         if readable:
             data = readable[0].recv(4096)
@@ -280,9 +282,9 @@ def startGame(indice):
                     game.players.remove(getPlayer(readable[0]))
                     listenToClient(readable[0])
         clients = list(map(lambda player: player.client, game.players))
-    for c in clients: # no player in the game = close the game and connections
-        c.close()
-    games.remove(game)
+    # for c in clients: # no player in the game = close the game and connections
+    #     c.close()
+    # games.remove(game)
 
 def createGame(client, data):
     datas = data.split(" ",2)
@@ -293,7 +295,7 @@ def createGame(client, data):
         game = Game(gameName)
         initializeMap(game)
         games.append(game)
-        joinGame(client,gameName)
+        # joinGame(client,gameName)
         _thread.start_new_thread(startGame, (len(games) - 1,))
         client.send(("game created\n").encode('utf-8'))
         return True
