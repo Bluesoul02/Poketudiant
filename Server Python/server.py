@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import socket, _thread, select, enum, random
+import socket, _thread, select, enum, random, os
 
 class Player:
     def __init__(self, client, x, y, nbRival):
@@ -212,8 +212,10 @@ def charReplacer(s, newstring, index, nofail=False):
     return s[:index] + newstring + s[index + 1:]
 
 def initializeMap(game):
-    #the path for the map must be absolute if we want to launch the from elsewhere then the directory Server Python  
-    fd = open('../map.txt', 'r') # initialize the game map
+    script_dir = os.path.dirname(__file__) # absolute directory the file is in
+    rel_path = "../map.txt"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    fd = open(abs_file_path, 'r') # initialize the game map
     game.map = Map(fd.read())
     mapSplit = game.map.map.split("\n")
     width = len(mapSplit)-1
@@ -289,9 +291,9 @@ def createGame(client, data):
         game = Game(gameName)
         initializeMap(game)
         games.append(game)
+        joinGame(client,gameName)
         _thread.start_new_thread(startGame, (len(games) - 1,))
         client.send(("game created\n").encode('utf-8'))
-        joinGame(client,gameName)
         return True
     else:
         client.send(("cannot create game\n").encode('utf-8'))
