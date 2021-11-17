@@ -120,6 +120,7 @@ public class Client {
 
 	public boolean joinGame(String gameName) throws IOException {
 		writer.println("join game " + gameName);
+		System.out.println("join game " + gameName);
 		return reader.readLine().equals("game joined");
 	}
 
