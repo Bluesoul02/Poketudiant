@@ -114,12 +114,12 @@ public class Client {
 
 	public boolean createGame(String gameName) throws IOException {
 		writer.println("create game " + gameName);
-		return reader.readLine() == "game created";
+		return reader.readLine().equals("game created");
 	}
 
 	public boolean joinGame(String gameName) throws IOException {
 		writer.println("join game " + gameName);
-		return reader.readLine() == "game joined";
+		return reader.readLine().equals("game joined");
 	}
 
 	public List<String> getServerOutput() {

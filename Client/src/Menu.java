@@ -8,7 +8,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JFrame;
 
 public class Menu extends JPanel {
     
@@ -22,7 +21,7 @@ public class Menu extends JPanel {
                 ServerPanel servPane;
                 try {
                     servPane = new ServerPanel(new Client("255.255.255.255"));
-                    ((JFrame) getParent().getParent().getParent()).setContentPane(servPane);
+                    GameFrame.getInstance().setContentPane(servPane);                    
                     servPane.revalidate();
                     servPane.repaint();
                 } catch (IOException e1) {

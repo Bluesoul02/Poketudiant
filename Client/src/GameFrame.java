@@ -5,7 +5,9 @@ import javax.swing.WindowConstants;
 
 public class GameFrame extends JFrame {
 
-    public GameFrame() {
+    private static final GameFrame instance = new GameFrame();
+
+    private GameFrame() {
         super("Poketudiant");
     
         Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -14,6 +16,10 @@ public class GameFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setContentPane(new Menu());
         setVisible(true);
+    }
+
+    public static final GameFrame getInstance() {
+        return instance;
     }
 
 }

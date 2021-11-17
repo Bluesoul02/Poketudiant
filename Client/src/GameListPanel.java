@@ -26,7 +26,12 @@ public class GameListPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             try {
                 if (client.joinGame(serverOutput.get(counter).split(" ")[1])) {
-                    // TODO launch game
+                    JPanel game = new Game(client);
+                    GameFrame.getInstance().setContentPane(game);
+                    game.repaint();
+                    game.revalidate();
+                } else {
+                    System.out.println("oui");
                 }
             } catch (IOException e1) {
                 e1.printStackTrace();
@@ -69,7 +74,10 @@ public class GameListPanel extends JPanel {
                 String gameName = JOptionPane.showInputDialog("Enter the game's name : ");
                 try {
                     if (client.createGame(gameName)) {
-                        // TODO launch game
+                        JPanel game = new Game(client);
+                        GameFrame.getInstance().setContentPane(game);
+                        game.revalidate();
+                        game.repaint();
                     }
                 } catch (IOException e1) {
                     e1.printStackTrace();
