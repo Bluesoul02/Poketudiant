@@ -114,12 +114,12 @@ public class Client {
 	}
 
 	public boolean createGame(String gameName) throws IOException {
-		writer.println("create game " + gameName);
+		writer.println("create game ".concat(gameName));
 		return reader.readLine().equals("game created");
 	}
 
 	public boolean joinGame(String gameName) throws IOException {
-		writer.println("join game " + gameName);
+		writer.println("join game ".concat(gameName));
 		System.out.println("join game " + gameName);
 		return reader.readLine().equals("game joined");
 	}
@@ -136,6 +136,14 @@ public class Client {
 			return width;
 		}
 		return -1;
+	}
+
+	public void sendMessage(String msg) {
+		writer.println("send message ".concat(msg));
+	}
+
+	public void move(String direction) {
+		writer.println("map move ".concat(direction));
 	}
 
 	public void emptyList() {

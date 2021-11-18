@@ -333,8 +333,7 @@ def listenToClient(client):
             if (dataDecoded.startswith('require game list')): # print games to client
                 printGames(client)
             elif (dataDecoded.startswith('create game')): # the client wants to create a game
-                if createGame(client, dataDecoded):
-                    inGame = True
+                createGame(client, dataDecoded)
             elif (dataDecoded.startswith('join game')): # the client wants to join a game
                 gameDatas = dataDecoded.split(" ",2)
                 if len(gameDatas) != 3:
