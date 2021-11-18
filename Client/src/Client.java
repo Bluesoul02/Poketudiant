@@ -120,13 +120,11 @@ public class Client {
 
 	public boolean joinGame(String gameName) throws IOException {
 		writer.println("join game ".concat(gameName));
-		System.out.println("join game " + gameName);
 		return reader.readLine().equals("game joined");
 	}
 
 	public int readMap() throws IOException {
 		String str = reader.readLine();
-		System.out.println(str);
 		if (str.split(" ")[0].equals("map")) {
 			int width = Integer.parseInt(str.split(" ")[1]);
 			int height = Integer.parseInt(str.split(" ")[2]);

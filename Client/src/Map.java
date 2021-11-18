@@ -3,26 +3,54 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 public class Map extends JPanel{
+    private ImageIcon grass;
+    private ImageIcon tallGrass;
+    private ImageIcon pokmnCenter;
     
     public Map(Client client) {
+        try {
+            grass = new ImageIcon(ImageIO.read(new File("assets/grass.png")));
+            Image image = grass.getImage();
+            Image rescaled = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+            grass = new ImageIcon(rescaled);
+                        
+            tallGrass = new ImageIcon(ImageIO.read(new File("assets/tallGrass.png")));
+            image = tallGrass.getImage();
+            rescaled = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+            tallGrass = new ImageIcon(rescaled);
+
+            pokmnCenter = new ImageIcon(ImageIO.read(new File("assets/pokmnCenter.png")));
+            image = pokmnCenter.getImage();
+            rescaled = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+            pokmnCenter = new ImageIcon(rescaled);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        drawMap(client);
+    }
+
+    public void drawMap(Client client) {
         GridLayout gl = new GridLayout();
         this.setLayout(gl);
         try {
+            client.emptyList(); // clear the list
             int width = client.readMap();
             gl.setColumns(width);
             List<String> map = client.getServerOutput();
-            final BufferedImage grass = ImageIO.read(new File("assets/grass.png"));
+            gl.setRows(map.size());
             JLabel picLabel;
             for (String mapLine : map) {
                 for(int i = 0; i < width; i++) {
-                    System.out.println(mapLine.charAt(i));
-                    picLabel = new JLabel(new ImageIcon(grass));
+                    if ((mapLine.charAt(i)) == ' ') picLabel = new JLabel(grass);
+                    else if ((mapLine.charAt(i)) == '*') picLabel = new JLabel(tallGrass);
+                    else picLabel = new JLabel(pokmnCenter);
                     add(picLabel);
                 }
             }
