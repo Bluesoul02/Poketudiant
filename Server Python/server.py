@@ -127,17 +127,15 @@ class Game:
     
     def sendMap(self, player):
         map = self.map
-        print("sendMap")
-        player.client.send("map " + str(map.width) + " " + str(map.height)).encode('utf-8')
+        player.client.send(("map " + str(map.width) + " " + str(map.height) + "\n").encode('utf-8'))
         mapSplit = map.map.split("\n")
         for p in self.players:
-            if p.player.client == player.client:
+            if p.client == player.client:
                 mapSplit[p.x] = charReplacer(mapSplit[p.x], str(0), p.y)
             else:
                 mapSplit[p.x] = charReplacer(mapSplit[p.x], str(p.nbRival), p.y)
         for line in mapSplit:
             player.client.send((line + "\n").encode('utf-8'))
-            print("map sended")
             
     def __str__(self):
         return "%d %s" % (len(self.players), self.name)
