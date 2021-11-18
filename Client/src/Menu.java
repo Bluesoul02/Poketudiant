@@ -1,7 +1,6 @@
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 
 import javax.swing.Box;
@@ -44,11 +43,5 @@ public class Menu extends JPanel {
         // create a gap between the buttons
         this.add(Box.createRigidArea(new Dimension(0, 15)));
         this.add(quit);
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        //g.drawImage(Toolkit.getDefaultToolkit().createImage("img/MenuBg"), 0, 0, null);
     }
 }

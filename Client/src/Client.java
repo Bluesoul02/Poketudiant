@@ -126,6 +126,7 @@ public class Client {
 
 	public int readMap() throws IOException {
 		String str = reader.readLine();
+		System.out.println(str);
 		if (str.split(" ")[0].equals("map")) {
 			int width = Integer.parseInt(str.split(" ")[1]);
 			int height = Integer.parseInt(str.split(" ")[2]);

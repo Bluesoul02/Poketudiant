@@ -69,15 +69,9 @@ public class GameListPanel extends JPanel {
                 String gameName = JOptionPane.showInputDialog("Enter the game's name : ");
                 try {
                     if (client.createGame(gameName)) {
-                        System.out.println("game created");
                         if (client.joinGame(gameName)) {
-                            System.out.println("game joined");
                             launchGame();
-                        } else {
-                            System.out.println("can't join");
                         }
-                    } else {
-                        System.out.println("pb create");
                     }
                 } catch (IOException e1) {
                     e1.printStackTrace();
