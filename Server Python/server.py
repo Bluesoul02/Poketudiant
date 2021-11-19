@@ -65,7 +65,7 @@ class Player:
         return True
 
     def sendMsgChat(self, clients, msg):
-        message = "rival message " + self.client.getsockname()[0] + " " + self.client.getsockname()[1] + " : " + msg
+        message = "rival message " + str(self.client.getsockname()[0]) + " " + str(self.client.getsockname()[1]) + " : " + str(msg)
         for c in clients:
             c.send((message).encode('utf-8'))
     
