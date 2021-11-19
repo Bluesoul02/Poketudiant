@@ -12,6 +12,7 @@ public class Map extends JPanel{
     private ImageIcon grass;
     private ImageIcon tallGrass;
     private ImageIcon pokmnCenter;
+    private ImageIcon player;
     
     public Map(Client client) {
         try {
@@ -29,6 +30,11 @@ public class Map extends JPanel{
             image = pokmnCenter.getImage();
             rescaled = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
             pokmnCenter = new ImageIcon(rescaled);
+
+            player = new ImageIcon(ImageIO.read(new File("assets/player.png")));
+            image = player.getImage();
+            rescaled = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+            player = new ImageIcon(rescaled);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,6 +56,7 @@ public class Map extends JPanel{
                 for(int i = 0; i < width; i++) {
                     if ((mapLine.charAt(i)) == ' ') picLabel = new JLabel(grass);
                     else if ((mapLine.charAt(i)) == '*') picLabel = new JLabel(tallGrass);
+                    else if ((mapLine.charAt(i)) == '0') picLabel = new JLabel(player);
                     else picLabel = new JLabel(pokmnCenter);
                     add(picLabel);
                 }
