@@ -1,0 +1,12 @@
+"Variété","Type","Capturable","Évolution"
+"Parlfor","Noisy",oui,null
+"Ismar","Noisy",oui,"Rigolamor"
+"Rigolamor","Noisy",non,null
+"Procrastino","Lazy",oui,null
+"Couchtar","Lazy",oui,"Nuidebou"
+"Nuidebou","Lazy",non,null
+"Alabourre","Lazy",oui,null
+"Buchafon","Motivated",oui,null
+"Belmention","Motivated",oui,"Promomajor"
+"Promomajor","Motivated",non,null
+"Enseignant-dresseur","Teacher",non,null
