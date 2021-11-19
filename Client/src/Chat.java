@@ -12,17 +12,21 @@ import java.awt.event.ActionEvent;
 public class Chat extends JPanel{
     private DefaultListModel<String> data;
     private JList<String> chat;
+    private Client client;
     
     public Chat(Client client) {
+        this.client = client;
+        client.setChat(this);
         setBackground(Color.decode("#f5f0e1"));
         data = new DefaultListModel<String>();
         chat = new JList<String>(data);
-        data.addElement("test");
         JTextField textField = new JTextField();
         textField.setPreferredSize(new Dimension(100, 20));
         textField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                sendMessage(textField.getText(), client);
+                sendMessage(textField.getText());
+                data.addElement(textField.getText());
+                textField.setText("");
             }
         });
         chat.setPreferredSize(new Dimension(100, Toolkit.getDefaultToolkit().getScreenSize().height - 50));
@@ -30,7 +34,7 @@ public class Chat extends JPanel{
         add(textField);
     }
 
-    public void sendMessage(String msg, Client client) {
+    public void sendMessage(String msg) {
         client.sendMessage(msg);
         revalidate();
         repaint();

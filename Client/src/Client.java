@@ -23,6 +23,8 @@ public class Client {
 	private BufferedReader reader;
 	private List<InetAddress> listOfInetAddress;
 	private List<String> serverOutput;
+	private Chat chat;
+	private Map map;
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
 	private static final String ANSWER_SEARCH_SERVER = "i'm a poketudiant server";
     private final static int PORTUDP = 9000;
@@ -113,6 +115,16 @@ public class Client {
 		}
 	}
 
+	public void listenToServer() throws IOException {
+		String str = reader.readLine();
+		while (str != null) {
+			if (str.contains("map")) readMap();
+			else if (str.contains("team")) receiveTeam();
+
+			str = reader.readLine();
+		}
+	}
+
 	public boolean createGame(String gameName) throws IOException {
 		writer.println("create game ".concat(gameName));
 		return reader.readLine().equals("game created");
@@ -123,26 +135,35 @@ public class Client {
 		return reader.readLine().equals("game joined");
 	}
 
-	public int readMap() throws IOException {
+	public void readMap() throws IOException {
+		emptyList();
 		String str = reader.readLine();
-		if (str.split(" ")[0].equals("map")) {
-			int width = Integer.parseInt(str.split(" ")[1]);
-			int height = Integer.parseInt(str.split(" ")[2]);
-			for (int i = 0; i < height; i++) {
-				serverOutput.add(reader.readLine());
-				System.out.println(serverOutput.get(i));
-			}
-			return width;
+		int width = Integer.parseInt(str.split(" ")[1]);
+		int height = Integer.parseInt(str.split(" ")[2]);
+		for (int i = 0; i < height; i++) {
+			serverOutput.add(reader.readLine());
 		}
-		return -1;
+		map.drawMap(width);
 	}
 
 	public void sendMessage(String msg) {
 		writer.println("send message ".concat(msg));
 	}
 
-	public void move(String direction) {
-		writer.println("map move ".concat(direction));
+	public void receiveTeam() throws IOException {
+		emptyList();
+		String str = reader.readLine();
+		for (int i = 0; i < Integer.parseInt(str.split(" ")[2]); i++) {
+
+		}
+	}
+
+	public void managePoketudiant(int pos, String direction, boolean move) {
+		writer.println("poketudiant " + pos + (move ? " move ".concat(direction) : " free"));
+	}
+
+	public void move(Direction direction) {
+		writer.println("map move ".concat(direction.label));
 	}
 
 	public void emptyList() {
@@ -151,6 +172,14 @@ public class Client {
 
 	public List<String> getServerOutput() {
 		return this.serverOutput;
+	}
+
+	public void setChat(Chat chat) {
+		this.chat = chat;
+	}
+
+	public void setMap(Map map) {
+		this.map = map;
 	}
 
     public void close() {

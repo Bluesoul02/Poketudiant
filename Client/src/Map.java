@@ -13,8 +13,11 @@ public class Map extends JPanel{
     private ImageIcon tallGrass;
     private ImageIcon pokmnCenter;
     private ImageIcon player;
+    private Client client;
     
     public Map(Client client) {
+        this.client = client;
+        client.setMap(this);
         try {
             grass = new ImageIcon(ImageIO.read(new File("assets/grass.png")));
             Image image = grass.getImage();
@@ -35,34 +38,28 @@ public class Map extends JPanel{
             image = player.getImage();
             rescaled = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
             player = new ImageIcon(rescaled);
+
+            client.readMap();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        drawMap(client);
     }
 
-    public void drawMap(Client client) {
+    public void drawMap(int width) {
         GridLayout gl = new GridLayout();
         this.setLayout(gl);
-        try {
-            client.emptyList(); // clear the list
-            int width = client.readMap();
-            gl.setColumns(width);
-            List<String> map = client.getServerOutput();
-            gl.setRows(map.size());
-            JLabel picLabel;
-            for (String mapLine : map) {
-                for(int i = 0; i < width; i++) {
-                    if ((mapLine.charAt(i)) == ' ') picLabel = new JLabel(grass);
-                    else if ((mapLine.charAt(i)) == '*') picLabel = new JLabel(tallGrass);
-                    else if ((mapLine.charAt(i)) == '0') picLabel = new JLabel(player);
-                    else picLabel = new JLabel(pokmnCenter);
-                    add(picLabel);
-                }
+        gl.setColumns(width);
+        List<String> map = client.getServerOutput();
+        gl.setRows(map.size());
+        JLabel picLabel;
+        for (String mapLine : map) {
+            for(int i = 0; i < width; i++) {
+                if ((mapLine.charAt(i)) == ' ') picLabel = new JLabel(grass);
+                else if ((mapLine.charAt(i)) == '*') picLabel = new JLabel(tallGrass);
+                else if ((mapLine.charAt(i)) == '0') picLabel = new JLabel(player);
+                else picLabel = new JLabel(pokmnCenter);
+                add(picLabel);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
