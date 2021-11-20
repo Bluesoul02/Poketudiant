@@ -323,7 +323,7 @@ def createGame(client, data):
 def joinGame(client, gameName):
     for g in games:
         if g.name == str(gameName) and maxPlayer > len(g.players): # the name specified is the same and the game is not full
-            g.players.append(Player(client, g.map.spawns[len(g.players) + 1][0], g.map.spawns[len(g.players) + 1][1], len(g.players) + 1))
+            g.players.append(Player(client, g.map.spawns[len(g.players)][0], g.map.spawns[len(g.players)][1], len(g.players)+1))
             client.send(("game joined\n").encode('utf-8'))
             g.sendMap(getPlayer(g, client)) # send the map to the player
             return True
