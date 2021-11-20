@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import socket, _thread, select, enum, random, os
+import socket, _thread, select, enum, random, csv, os
 
 class Player:
     def __init__(self, client, x, y, nbRival):
@@ -173,7 +173,26 @@ class Poketudiant:
         return "%s" % (self.variety, self.type, self.level, self.exp, self.expLevel - self.exp, self.currentHP, self.maxHP, self.attack, self.defence)
 
 games = []
+poketudiants = []
+statistics = []
+attacks = []
 maxPlayer = 4
+
+def initializeRecords():
+    templateRecords("../poketudiants.csv",poketudiants)
+    templateRecords("../statistics.csv",statistics)
+    templateRecords("../attacks.csv",attacks)
+
+def templateRecords(file_path,arr):
+    script_dir = os.path.dirname(__file__) # absolute directory the file is in
+    rel_path = file_path
+    abs_file_path = os.path.join(script_dir, rel_path)
+    with open(abs_file_path, 'r') as file:
+        csv_file = csv.DictReader(file)
+        for row in csv_file:
+            arr.append(dict(row))
+
+initializeRecords()
 
 def sendMapForAll(game, clients):
     for c in clients:
