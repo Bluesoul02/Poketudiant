@@ -25,6 +25,7 @@ public class Client {
 	private List<String> serverOutput;
 	private Chat chat;
 	private Map map;
+	private boolean inGame;
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
 	private static final String ANSWER_SEARCH_SERVER = "i'm a poketudiant server";
     private final static int PORTUDP = 9000;
@@ -116,12 +117,14 @@ public class Client {
 	}
 
 	public void listenToServer() throws IOException {
-		String str = reader.readLine();
-		while (str != null) {
+		inGame = true;
+		while (inGame) {
+			System.out.println("listening");
+			String str = reader.readLine();
+			System.out.println(str);
 			if (str.contains("map")) readMap();
+			else if (str.contains("rival message")) chat.receiveMessage(str.split(" ")[2], str.split(" ")[3]);
 			else if (str.contains("team")) receiveTeam();
-
-			str = reader.readLine();
 		}
 	}
 

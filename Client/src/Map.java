@@ -56,8 +56,8 @@ public class Map extends JPanel{
             for(int i = 0; i < width; i++) {
                 if ((mapLine.charAt(i)) == ' ') picLabel = new JLabel(grass);
                 else if ((mapLine.charAt(i)) == '*') picLabel = new JLabel(tallGrass);
-                else if ((mapLine.charAt(i)) == '0') picLabel = new JLabel(player);
-                else picLabel = new JLabel(pokmnCenter);
+                else if ((mapLine.charAt(i)) == '+') picLabel = new JLabel(pokmnCenter);
+                else picLabel = new JLabel(player);
                 add(picLabel);
             }
         }

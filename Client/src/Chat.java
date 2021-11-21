@@ -25,7 +25,7 @@ public class Chat extends JPanel{
         textField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 sendMessage(textField.getText());
-                data.addElement(textField.getText());
+                //data.addElement(textField.getText());
                 textField.setText("");
             }
         });
@@ -34,10 +34,14 @@ public class Chat extends JPanel{
         add(textField);
     }
 
-    public void sendMessage(String msg) {
-        client.sendMessage(msg);
+    public void receiveMessage(String rival, String msg) {
+        data.addElement(rival.concat(": ").concat(msg));
         revalidate();
         repaint();
+    }
+
+    public void sendMessage(String msg) {
+        client.sendMessage(msg);
     }
 
 }
