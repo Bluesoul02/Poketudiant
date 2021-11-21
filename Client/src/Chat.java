@@ -21,7 +21,7 @@ public class Chat extends JPanel{
         data = new DefaultListModel<String>();
         chat = new JList<String>(data);
         JTextField textField = new JTextField();
-        textField.setPreferredSize(new Dimension(100, 20));
+        textField.setPreferredSize(new Dimension(200, 30));
         textField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 sendMessage(textField.getText());
@@ -29,9 +29,10 @@ public class Chat extends JPanel{
                 textField.setText("");
             }
         });
-        chat.setPreferredSize(new Dimension(100, Toolkit.getDefaultToolkit().getScreenSize().height - 50));
+        chat.setPreferredSize(new Dimension(200, Toolkit.getDefaultToolkit().getScreenSize().height - 100));
         add(chat);
         add(textField);
+        System.out.println("chatPanel");
     }
 
     public void receiveMessage(String rival, String msg) {

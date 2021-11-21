@@ -65,9 +65,10 @@ class Player:
         return True
 
     def sendMsgChat(self, clients, msg):
-        message = "rival message " + str(self.client.getsockname()[0]) + " " + str(self.client.getsockname()[1]) + " : " + str(msg)
+        message = "rival message " + str(self.client.getsockname()[0]) + " " + str(self.client.getsockname()[1]) + " : " + str(msg) + "\n"
         for c in clients:
             c.send((message).encode('utf-8'))
+            print(message)
     
     def healPoketudiants(self):
         for p in self.poketudiants:

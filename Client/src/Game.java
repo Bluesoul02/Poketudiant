@@ -7,11 +7,13 @@ public class Game extends JPanel {
     
     public Game(Client client) {
         client.emptyList(); // clear the list
+        // client.game = this;
         map = new Map(client); 
         chat = new Chat(client);
         add(map); // add the map on the panel
         add(chat); // add the chat on the panel
         startGame(client);
+        System.out.println("GamePanel");
     }
 
     public void startGame(Client client) {
@@ -19,7 +21,10 @@ public class Game extends JPanel {
             @Override
             public void run() {
                 try {
-                    client.listenToServer();
+                    while (true) {
+                        client.listenToServer();
+                        System.out.println("daemon");
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }     

@@ -25,7 +25,7 @@ public class Client {
 	private List<String> serverOutput;
 	private Chat chat;
 	private Map map;
-	private boolean inGame;
+	//public Game game;
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
 	private static final String ANSWER_SEARCH_SERVER = "i'm a poketudiant server";
     private final static int PORTUDP = 9000;
@@ -117,24 +117,29 @@ public class Client {
 	}
 
 	public void listenToServer() throws IOException {
-		inGame = true;
-		while (inGame) {
-			System.out.println("listening");
-			String str = reader.readLine();
-			System.out.println(str);
-			if (str.contains("map")) readMap();
-			else if (str.contains("rival message")) chat.receiveMessage(str.split(" ")[2], str.split(" ")[3]);
-			else if (str.contains("team")) receiveTeam();
+		String str = reader.readLine();
+		System.out.println("listening");
+		if (str.contains("map")) readMap();
+		else if (str.contains("rival message")) {
+			String[] lStrings = str.split(" "); 
+			String rival = lStrings[2];
+			String msg = lStrings[5];
+			for (int i = 6; i < lStrings.length; i++) msg = msg.concat(" ".concat(lStrings[i]));
+			chat.receiveMessage(rival, msg);
 		}
+		else if (str.contains("team")) receiveTeam();
+		else System.out.println("x"+str+"x");
 	}
 
 	public boolean createGame(String gameName) throws IOException {
 		writer.println("create game ".concat(gameName));
+		writer.flush();
 		return reader.readLine().equals("game created");
 	}
 
 	public boolean joinGame(String gameName) throws IOException {
 		writer.println("join game ".concat(gameName));
+		writer.flush();
 		return reader.readLine().equals("game joined");
 	}
 
@@ -151,6 +156,7 @@ public class Client {
 
 	public void sendMessage(String msg) {
 		writer.println("send message ".concat(msg));
+		writer.flush();
 	}
 
 	public void receiveTeam() throws IOException {
