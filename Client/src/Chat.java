@@ -29,7 +29,7 @@ public class Chat extends JPanel{
                 textField.setText("");
             }
         });
-        chat.setPreferredSize(new Dimension(200, Toolkit.getDefaultToolkit().getScreenSize().height - 100));
+        chat.setPreferredSize(new Dimension(400, Toolkit.getDefaultToolkit().getScreenSize().height - 200));
         add(chat);
         add(textField);
         System.out.println("chatPanel");

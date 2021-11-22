@@ -39,7 +39,6 @@ public class Map extends JPanel{
             rescaled = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
             player = new ImageIcon(rescaled);
 
-            client.readMap();
         } catch (IOException e) {
             e.printStackTrace();
         }

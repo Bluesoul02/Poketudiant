@@ -21,10 +21,7 @@ public class Game extends JPanel {
             @Override
             public void run() {
                 try {
-                    while (true) {
-                        client.listenToServer();
-                        System.out.println("daemon");
-                    }
+                    client.listenToServer();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }     

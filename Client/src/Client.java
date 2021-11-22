@@ -25,6 +25,7 @@ public class Client {
 	private List<String> serverOutput;
 	private Chat chat;
 	private Map map;
+	private boolean inGame;
 	//public Game game;
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
 	private static final String ANSWER_SEARCH_SERVER = "i'm a poketudiant server";
@@ -117,18 +118,22 @@ public class Client {
 	}
 
 	public void listenToServer() throws IOException {
-		String str = reader.readLine();
-		System.out.println("listening");
-		if (str.contains("map")) readMap();
-		else if (str.contains("rival message")) {
-			String[] lStrings = str.split(" "); 
-			String rival = lStrings[2];
-			String msg = lStrings[5];
-			for (int i = 6; i < lStrings.length; i++) msg = msg.concat(" ".concat(lStrings[i]));
-			chat.receiveMessage(rival, msg);
+		inGame = true;
+		while (inGame) {
+			String str = reader.readLine();
+			System.out.println("listening");
+			System.out.println(str);
+			if (str.contains("map")) readMap(str);
+			else if (str.contains("rival message")) {
+				String[] lStrings = str.split(" "); 
+				String rival = lStrings[2].concat(" ".concat(lStrings[3]));
+				String msg = lStrings[5];
+				for (int i = 6; i < lStrings.length; i++) msg = msg.concat(" ".concat(lStrings[i]));
+				chat.receiveMessage(rival, msg);
+			}
+			else if (str.contains("team")) receiveTeam();
+			else System.out.println("x"+str+"x");
 		}
-		else if (str.contains("team")) receiveTeam();
-		else System.out.println("x"+str+"x");
 	}
 
 	public boolean createGame(String gameName) throws IOException {
@@ -143,9 +148,8 @@ public class Client {
 		return reader.readLine().equals("game joined");
 	}
 
-	public void readMap() throws IOException {
+	public void readMap(String str) throws IOException {
 		emptyList();
-		String str = reader.readLine();
 		int width = Integer.parseInt(str.split(" ")[1]);
 		int height = Integer.parseInt(str.split(" ")[2]);
 		for (int i = 0; i < height; i++) {
