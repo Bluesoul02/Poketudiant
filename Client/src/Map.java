@@ -48,11 +48,14 @@ public class Map extends JPanel{
     public void drawMap(int width) {
         GridLayout gl = new GridLayout();
         this.setLayout(gl);
+        if (width > 15) width = 15;
+        int c = 0;
         gl.setColumns(width);
         List<String> map = client.getServerOutput();
         gl.setRows(map.size());
         JLabel picLabel;
         for (String mapLine : map) {
+            c++;
             for(int i = 0; i < width; i++) {
                 if ((mapLine.charAt(i)) == ' ') picLabel = new JLabel(grass);
                 else if ((mapLine.charAt(i)) == '*') picLabel = new JLabel(tallGrass);
@@ -60,6 +63,9 @@ public class Map extends JPanel{
                 else picLabel = new JLabel(player);
                 add(picLabel);
             }
+            if (c == 15) break;
         }
+        revalidate();
+        repaint();
     }
 }

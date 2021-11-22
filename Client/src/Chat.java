@@ -25,7 +25,6 @@ public class Chat extends JPanel{
         textField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 sendMessage(textField.getText());
-                //data.addElement(textField.getText());
                 textField.setText("");
             }
         });

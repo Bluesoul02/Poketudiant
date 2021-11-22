@@ -56,7 +56,8 @@ public class GameListPanel extends JPanel {
         String playerNb;
         for (int i = 0; i < serverOutput.size(); i++) {
             add(Box.createRigidArea(new Dimension(0, 15)));
-            gameName = serverOutput.get(i).split(" ")[1];
+            gameName = serverOutput.get(i).split(" ", 2)[1];
+            System.out.println(gameName);
             playerNb = serverOutput.get(i).split(" ")[0];
             button = new JButton(gameName + " players : " + playerNb);
             button.addActionListener(new MyActionListener(i));

@@ -127,6 +127,7 @@ public class Client {
 			else if (str.contains("rival message")) {
 				String[] lStrings = str.split(" "); 
 				String rival = lStrings[2].concat(" ".concat(lStrings[3]));
+				// lStrings = str.split(" ", 5);
 				String msg = lStrings[5];
 				for (int i = 6; i < lStrings.length; i++) msg = msg.concat(" ".concat(lStrings[i]));
 				chat.receiveMessage(rival, msg);
@@ -139,7 +140,9 @@ public class Client {
 	public boolean createGame(String gameName) throws IOException {
 		writer.println("create game ".concat(gameName));
 		writer.flush();
-		return reader.readLine().equals("game created");
+		String str = reader.readLine();
+		System.out.println(str);
+		return str.equals("game created");
 	}
 
 	public boolean joinGame(String gameName) throws IOException {
@@ -150,10 +153,13 @@ public class Client {
 
 	public void readMap(String str) throws IOException {
 		emptyList();
+		System.out.println(str);
 		int width = Integer.parseInt(str.split(" ")[1]);
 		int height = Integer.parseInt(str.split(" ")[2]);
+		System.out.println(height);
 		for (int i = 0; i < height; i++) {
 			serverOutput.add(reader.readLine());
+			System.out.println(serverOutput.get(i));
 		}
 		map.drawMap(width);
 	}
