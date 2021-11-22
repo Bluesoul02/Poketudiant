@@ -9,6 +9,10 @@ class Player:
         self.y  = y
         self.nbRival = nbRival
         self.poketudiants = []
+    
+    #def createPoketudiant(name):
+    	#
+    	#return starter
 
     def moveLeft(self):
         if self.x > 0:
@@ -65,10 +69,9 @@ class Player:
         return True
 
     def sendMsgChat(self, clients, msg):
-        message = "rival message " + str(self.client.getsockname()[0]) + " " + str(self.client.getsockname()[1]) + " : " + str(msg) + "\n"
-        for c in clients:
-            c.send((message).encode('utf-8'))
-            print(message)
+    	message = "rival message " + str(self.client.getpeername()[0]) + " " + str(self.client.getpeername()[1]) + " : " + str(msg) + "\n"
+    	for c in clients:
+    		c.send((message).encode('utf-8'))
     
     def healPoketudiants(self):
         for p in self.poketudiants:
@@ -136,8 +139,8 @@ class Game:
             else:
                 mapSplit[p.x] = charReplacer(mapSplit[p.x], str(p.nbRival), p.y)
         for line in mapSplit:
-            player.client.send((line + "\n").encode('utf-8'))
-            
+        	player.client.send((line + "\n").encode('utf-8'))
+
     def __str__(self):
         return "%d %s" % (len(self.players), self.name)
 
@@ -265,9 +268,7 @@ def startRivalFight():
 def startGame(indice):
     game = games[indice]
     clients = list(map(lambda player: player.client, game.players))
-    while(True):
-        while(not clients):
-            clients = list(map(lambda player: player.client, game.players))
+    while(len(clients)):
         readable,_,_= select.select(clients, [], [], 10)
         if readable:
             data = readable[0].recv(4096)
@@ -300,9 +301,9 @@ def startGame(indice):
                     game.players.remove(getPlayer(readable[0]))
                     listenToClient(readable[0])
         clients = list(map(lambda player: player.client, game.players))
-    # for c in clients: # no player in the game = close the game and connections
-    #     c.close()
-    # games.remove(game)
+    for c in clients: # no player in the game = close the game and connections
+        c.close()
+    games.remove(game)
 
 def createGame(client, data):
     datas = data.split(" ",2)
@@ -313,19 +314,21 @@ def createGame(client, data):
         game = Game(gameName)
         initializeMap(game)
         games.append(game)
-        # joinGame(client,gameName)
+        joinGame(client,gameName, 1)
         _thread.start_new_thread(startGame, (len(games) - 1,))
-        client.send(("game created\n").encode('utf-8'))
         return True
     else:
         client.send(("cannot create game\n").encode('utf-8'))
         return False
 
-def joinGame(client, gameName):
+def joinGame(client, gameName, justCreated = 0):
     for g in games:
         if g.name == str(gameName) and maxPlayer > len(g.players): # the name specified is the same and the game is not full
             g.players.append(Player(client, g.map.spawns[len(g.players)][0], g.map.spawns[len(g.players)][1], len(g.players)+1))
-            client.send(("game joined\n").encode('utf-8'))
+            if not justCreated:
+            	client.send(("game joined\n").encode('utf-8'))
+            else:
+            	client.send(("game created\n").encode('utf-8'))
             g.sendMap(getPlayer(g, client)) # send the map to the player
             return True
     client.send(("cannot join game\n").encode('utf-8'))
