@@ -1,3 +1,4 @@
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -15,23 +16,24 @@ public class Chat extends JPanel{
     private Client client;
     
     public Chat(Client client) {
+        BoxLayout bl = new BoxLayout(this, BoxLayout.PAGE_AXIS);
+        this.setLayout(bl);
         this.client = client;
         client.setChat(this);
         setBackground(Color.decode("#f5f0e1"));
         data = new DefaultListModel<String>();
         chat = new JList<String>(data);
         JTextField textField = new JTextField();
-        textField.setPreferredSize(new Dimension(200, 30));
+        textField.setPreferredSize(new Dimension(400, 30));
         textField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 sendMessage(textField.getText());
                 textField.setText("");
             }
         });
-        chat.setPreferredSize(new Dimension(400, Toolkit.getDefaultToolkit().getScreenSize().height - 200));
+        chat.setPreferredSize(new Dimension(400, Toolkit.getDefaultToolkit().getScreenSize().height - 100));
         add(chat);
         add(textField);
-        System.out.println("chatPanel");
     }
 
     public void receiveMessage(String rival, String msg) {

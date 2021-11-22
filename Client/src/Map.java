@@ -21,22 +21,22 @@ public class Map extends JPanel{
         try {
             grass = new ImageIcon(ImageIO.read(new File("assets/grass.png")));
             Image image = grass.getImage();
-            Image rescaled = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+            Image rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             grass = new ImageIcon(rescaled);
                         
             tallGrass = new ImageIcon(ImageIO.read(new File("assets/tallGrass.png")));
             image = tallGrass.getImage();
-            rescaled = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+            rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             tallGrass = new ImageIcon(rescaled);
 
             pokmnCenter = new ImageIcon(ImageIO.read(new File("assets/pokmnCenter.png")));
             image = pokmnCenter.getImage();
-            rescaled = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+            rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             pokmnCenter = new ImageIcon(rescaled);
 
             player = new ImageIcon(ImageIO.read(new File("assets/player.png")));
             image = player.getImage();
-            rescaled = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+            rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             player = new ImageIcon(rescaled);
 
         } catch (IOException e) {
