@@ -43,7 +43,6 @@ public class GameListPanel extends JPanel {
         setBackground(Color.decode("#f5f0e1"));
         BoxLayout bl = new BoxLayout(this, BoxLayout.PAGE_AXIS);
         this.setLayout(bl);
-        //showGameList();
     }
 
     public void showGameList() {
@@ -85,7 +84,6 @@ public class GameListPanel extends JPanel {
     public void launchGame() {
         JPanel game = new Game(client);
         GameFrame.getInstance().setContentPane(game);
-        System.out.println("lessgo");
         game.repaint();
         game.revalidate();
     }

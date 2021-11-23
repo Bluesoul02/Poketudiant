@@ -55,7 +55,6 @@ public class Map extends JPanel{
         gl.setRows(map.size());
         JLabel picLabel;
         for (String mapLine : map) {
-            c++;
             for(int i = 0; i < width; i++) {
                 if ((mapLine.charAt(i)) == ' ') picLabel = new JLabel(grass);
                 else if ((mapLine.charAt(i)) == '*') picLabel = new JLabel(tallGrass);
@@ -63,7 +62,7 @@ public class Map extends JPanel{
                 else picLabel = new JLabel(player);
                 add(picLabel);
             }
-            if (c == 15) break;
+            if (++c == 15) break;
         }
         revalidate();
         repaint();

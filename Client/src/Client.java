@@ -25,8 +25,8 @@ public class Client {
 	private List<String> serverOutput;
 	private Chat chat;
 	private Map map;
+	private Team team;
 	private boolean inGame;
-	//public Game game;
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
 	private static final String ANSWER_SEARCH_SERVER = "i'm a poketudiant server";
     private final static int PORTUDP = 9000;
@@ -130,8 +130,7 @@ public class Client {
 				String msg = str.split(" ", 6)[5];
 				chat.receiveMessage(rival, msg);
 			}
-			else if (str.contains("team")) receiveTeam();
-			else System.out.println("x"+str+"x");
+			else if (str.contains("team")) receiveTeam(str);
 		}
 	}
 
@@ -167,12 +166,19 @@ public class Client {
 		writer.flush();
 	}
 
-	public void receiveTeam() throws IOException {
-		emptyList();
-		String str = reader.readLine();
+	public void receiveTeam(String str) throws IOException {
+		ArrayList<Poketudiant> poketudiants = new ArrayList<Poketudiant>();
+		String poke;
+		String[] lStrings;
 		for (int i = 0; i < Integer.parseInt(str.split(" ")[2]); i++) {
-
+			poke = reader.readLine();
+			lStrings = poke.split(" ");
+			poketudiants.add(new Poketudiant(lStrings[0], lStrings[1], Integer.parseInt(lStrings[2]), Integer.parseInt(lStrings[3]),
+			Integer.parseInt(lStrings[4]), Integer.parseInt(lStrings[5]), Integer.parseInt(lStrings[6]), Integer.parseInt(lStrings[7]),
+			Integer.parseInt(lStrings[8]), lStrings[9], lStrings[10], lStrings[11], lStrings[12]));
+			System.out.println(poketudiants.get(i).toString());
 		}
+		team.drawTeam(poketudiants);
 	}
 
 	public void managePoketudiant(int pos, String direction, boolean move) {
@@ -197,6 +203,10 @@ public class Client {
 
 	public void setMap(Map map) {
 		this.map = map;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
 	}
 
     public void close() {

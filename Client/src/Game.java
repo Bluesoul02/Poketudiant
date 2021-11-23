@@ -7,13 +7,13 @@ public class Game extends JPanel {
     
     public Game(Client client) {
         client.emptyList(); // clear the list
-        // client.game = this;
         map = new Map(client); 
         chat = new Chat(client);
+        Team team = new Team(client);
+        add(team); // add the team on the panel
         add(map); // add the map on the panel
         add(chat); // add the chat on the panel
         startGame(client);
-        System.out.println("GamePanel");
     }
 
     public void startGame(Client client) {
