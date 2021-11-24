@@ -9,10 +9,6 @@ class Player:
         self.y  = y
         self.nbRival = nbRival
         self.poketudiants = []
-    
-    #def createPoketudiant(name):
-    	#
-    	#return starter
 
     def moveLeft(self):
         if self.x > 0:
@@ -169,6 +165,30 @@ class Poketudiant:
         self.isReleasable = isReleasable
         self.evolution = evolution
         self.evolutionLevel = evolutionLevel
+    
+    # def createPoketudiant(name):
+    #     starter = Poketudiant()
+    #     exists = False
+    #     for p in poketudiants:
+    #         if p["Variété"] == name:
+    #             starter.variety = p["Variété"]
+    #             starter.type = p["Type"]
+    #             starter.isCatchable = p["Capturable"]
+    #             starter.evolution = p["Évolution"]
+    #             exists = True
+    #     if not exists:
+    #         return False
+    #     for s in statistics:
+    #         if s["Variété"] == name:
+    #             starter.attack = s["Attaque"]
+    #             starter.defence = s["Défense"]
+    #             starter.maxHP = s["PV max."]
+    #     for a in attacks:
+    #         if a["Type"] == starter.type:
+    #             starter.attacks.append(Attack(a["Attaque"], a["Type"], a["Puissance"]))
+    #     print("Wow")
+    #     print(starter)
+    #     return starter
 
     def getHealth(self):
         self.currentHP = self.maxHP
