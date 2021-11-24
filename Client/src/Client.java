@@ -125,9 +125,9 @@ public class Client {
 			System.out.println(str);
 			if (str.contains("map")) readMap(str);
 			else if (str.contains("rival message")) {
-				String[] lStrings = str.split(" "); 
-				String rival = lStrings[2].concat(" ".concat(lStrings[3]));
-				String msg = str.split(" ", 6)[5];
+				String[] lStrings = str.split(" ", 4); 
+				String rival = lStrings[2];
+				String msg = lStrings[3];
 				chat.receiveMessage(rival, msg);
 			}
 			else if (str.contains("team")) receiveTeam(str);
