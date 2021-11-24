@@ -68,8 +68,11 @@ public class GameListPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String gameName = JOptionPane.showInputDialog("Enter the game's name : ");
                 try {
-                    if (client.createGame(gameName)) {
+                    if(!(gameName == null || (gameName != null && ("".equals(gameName)))))   
+                    {
+                        if (client.createGame(gameName)) {
                             launchGame();
+                    }
                     }
                 } catch (IOException e1) {
                     e1.printStackTrace();

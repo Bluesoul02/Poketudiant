@@ -52,7 +52,7 @@ public class Map extends JPanel{
         int c = 0;
         gl.setColumns(width);
         List<String> map = client.getServerOutput();
-        gl.setRows(map.size());
+        gl.setRows(map.size() > 15 ? 15 : map.size());
         JLabel picLabel;
         for (String mapLine : map) {
             for(int i = 0; i < width; i++) {
@@ -63,6 +63,7 @@ public class Map extends JPanel{
                 add(picLabel);
             }
             if (++c == 15) break;
+            System.out.println(c);
         }
         revalidate();
         repaint();
