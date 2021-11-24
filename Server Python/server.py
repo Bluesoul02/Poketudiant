@@ -372,19 +372,19 @@ def createGame(client, data):
         return False
 
 def joinGame(client, gameName, justCreated = 0):
-	for g in games:
-		if g.name == str(gameName) and maxPlayer > len(g.players): # the name specified is the same and the game is not full
-			player = createPlayer(client,g)
-			g.players.append(player)
-			if not justCreated:
-				client.send(("game joined\n").encode('utf-8'))
-			else:
-				client.send(("game created\n").encode('utf-8'))
-			g.sendMap(player) # send the map to the player
-			player.sendPoketudiants()
-			return True
-	client.send(("cannot join game\n").encode('utf-8'))
-	return False
+    for g in games:
+        if g.name == str(gameName) and maxPlayer > len(g.players): # the name specified is the same and the game is not full
+            player = createPlayer(client,g)
+            g.players.append(player)
+            if not justCreated:
+                client.send(("game joined\n").encode('utf-8'))
+            else:
+                client.send(("game created\n").encode('utf-8'))
+            g.sendMap(player) # send the map to the player
+            player.sendPoketudiants()
+            return True
+    client.send(("cannot join game\n").encode('utf-8'))
+    return False
 
 def printGames(client):
     client.send(("number of games " + str(len(games)) + "\n").encode('utf-8'))
