@@ -30,7 +30,7 @@ public class Client {
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
 	private static final String ANSWER_SEARCH_SERVER = "i'm a poketudiant server";
     private final static int PORTUDP = 9000;
-    private final static int PORTTCP = 9001;
+    private final static int PORTTCP = 9002;
     private final static int SIZE = 500;
 
     public Client(String hostname) throws IOException {
