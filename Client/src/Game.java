@@ -2,13 +2,11 @@ import java.io.IOException;
 import javax.swing.JPanel;
 
 public class Game extends JPanel {
-    private Chat chat;
-    private Map map;
     
     public Game(Client client) {
         client.emptyList(); // clear the list
-        map = new Map(client); 
-        chat = new Chat(client);
+        Map map = new Map(client); 
+        Chat chat = new Chat(client);
         Team team = new Team(client);
         add(team); // add the team on the panel
         add(map); // add the map on the panel
@@ -29,19 +27,5 @@ public class Game extends JPanel {
         }, "Demon");
         daemon.setDaemon(true);
         daemon.start();
-    }
-
-    /**
-     * @return the chat
-     */
-    public Chat getChat() {
-        return chat;
-    }
-
-    /**
-     * @return the map
-     */
-    public Map getMap() {
-        return map;
     }
 }

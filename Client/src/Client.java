@@ -159,6 +159,8 @@ public class Client {
 			System.out.println(serverOutput.get(i));
 		}
 		map.drawMap(width);
+		map.requestFocus();
+        map.addKeyListener(new InputListener(this));
 	}
 
 	public void sendMessage(String msg) {
@@ -182,8 +184,12 @@ public class Client {
 		team.drawTeam(poketudiants);
 	}
 
-	public void managePoketudiant(int pos, String direction, boolean move) {
-		writer.println("poketudiant " + pos + (move ? " move ".concat(direction) : " free"));
+	public void movePoketudiant(int pos, Direction direction) {
+		writer.println("poketudiant " + pos + " move ".concat(direction.label));
+	}
+
+	public void freePoketudiant(int pos) {
+		writer.println("poketudiant " + pos + " free");
 	}
 
 	public void move(Direction direction) {
