@@ -45,6 +45,7 @@ public class Map extends JPanel{
     }
 
     public void drawMap(int width) {
+        removeAll();
         GridLayout gl = new GridLayout();
         this.setLayout(gl);
         if (width > 15) width = 15;

@@ -37,7 +37,7 @@ public class InputListener implements KeyListener{
                 }
             }
         };
-        timer.scheduleAtFixedRate(timertask, 0, 600);
+        timer.scheduleAtFixedRate(timertask, 0, 10000);
     }
 
     @Override
