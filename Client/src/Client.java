@@ -162,6 +162,7 @@ public class Client {
 	}
 
 	public void sendMessage(String msg) {
+		//if (msg.equals("")) return;
 		writer.println("send message ".concat(msg));
 		writer.flush();
 	}
@@ -172,11 +173,11 @@ public class Client {
 		String[] lStrings;
 		for (int i = 0; i < Integer.parseInt(str.split(" ")[2]); i++) {
 			poke = reader.readLine();
+			System.out.println(poke);
 			lStrings = poke.split(" ");
 			poketudiants.add(new Poketudiant(lStrings[0], lStrings[1], Integer.parseInt(lStrings[2]), Integer.parseInt(lStrings[3]),
 			Integer.parseInt(lStrings[4]), Integer.parseInt(lStrings[5]), Integer.parseInt(lStrings[6]), Integer.parseInt(lStrings[7]),
 			Integer.parseInt(lStrings[8]), lStrings[9], lStrings[10], lStrings[11], lStrings[12]));
-			System.out.println(poketudiants.get(i).toString());
 		}
 		team.drawTeam(poketudiants);
 	}
