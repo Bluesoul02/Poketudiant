@@ -18,7 +18,9 @@ public class Team extends JPanel{
         }
 
         public void actionPerformed(ActionEvent e) {
-            client.movePoketudiant(selectedButton.getPos(), direction);
+            if (selectedButton != null && ((direction == Direction.DOWN && 0 < selectedButton.getPos()) || 
+            (direction == Direction.UP && pokebuttons.size() > (selectedButton.getPos() + 1)))) 
+                client.movePoketudiant(selectedButton.getPos(), direction);
         }
     }
 
@@ -41,18 +43,14 @@ public class Team extends JPanel{
         select.setForeground(Color.WHITE);
         setBackground(Color.decode("#1e3d59"));
         JButton up = new JButton("\u25B2");
-        JButton right = new JButton("\u25B6");
-        JButton left = new JButton("\u25C0");
         JButton down = new JButton("\u25BC");
+        JButton free = new JButton("free(not working)");
         up.addActionListener(new MyActionListener(Direction.UP));
         down.addActionListener(new MyActionListener(Direction.DOWN));
-        right.addActionListener(new MyActionListener(Direction.RIGHT));
-        left.addActionListener(new MyActionListener(Direction.LEFT));
-        add(up);
-        add(right);
-        add(left);
-        add(down);
         add(select);
+        add(up);
+        add(free);
+        add(down);
     }
 
     public void drawTeam(List<Poketudiant> poketudiants) {

@@ -185,15 +185,19 @@ public class Client {
 	}
 
 	public void movePoketudiant(int pos, Direction direction) {
+		System.out.println("poketudiant " + pos + " move ".concat(direction.label));
 		writer.println("poketudiant " + pos + " move ".concat(direction.label));
+		writer.flush();
 	}
 
 	public void freePoketudiant(int pos) {
 		writer.println("poketudiant " + pos + " free");
+		writer.flush();
 	}
 
 	public void move(Direction direction) {
 		writer.println("map move ".concat(direction.label));
+		writer.flush();
 	}
 
 	public void emptyList() {
