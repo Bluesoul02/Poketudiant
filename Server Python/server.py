@@ -35,12 +35,12 @@ class Player:
         return False
     
     def sendPoketudiants(self):
-        self.client.send("team contains " + str(len(self.poketudiants))).encode('utf-8')
+        self.client.send(("team contains " + str(len(self.poketudiants)) + "\n").encode('utf-8'))
         for p in self.poketudiants:
             poketudiant = str(p.variety) + " " + str(p.type) + " " + str(p.level) + " " + str(p.exp) + " " +  str(p.expLevel - p.exp) + " " + str(p.currentHP) + " " + str(p.maxHP) + " " + str(p.attack) + " " + str(p.defence)
             for a in p.attacks:
                 poketudiant += " " + str(a.name) + " " + str(a.type)
-            self.client.send(poketudiant).encode('utf-8')
+            self.client.send((poketudiant + "\n").encode('utf-8'))
         
     def poketudiantMoveUp(self, indice):
         if indice >= len(self.poketudiants) or indice == 0:
@@ -61,13 +61,14 @@ class Player:
     def poketudiantFree(self, indice):
         if len(self.poketudiants) == 0 or indice > (len(self.poketudiants) - 1):
             return False
-        self.poketudiants.pop(indice)
+        if self.poketudiants[indice].variety != "Enseignant-dresseur":
+            self.poketudiants.pop(indice)
         return True
 
     def sendMsgChat(self, clients, msg):
     	message = "rival message " + str(self.client.getpeername()[0]) + " " + str(self.client.getpeername()[1]) + " : " + str(msg) + "\n"
     	for c in clients:
-    		c.send((message).encode('utf-8'))
+    		c.send((message + "\n").encode('utf-8'))
     
     def healPoketudiants(self):
         for p in self.poketudiants:
@@ -150,7 +151,7 @@ class Attack:
         return "%s %s %s" % (self.name, self.type, self.power)
 
 class Poketudiant:
-    def __init__(self, variety, type, level, expLevel, exp, currentHP, maxHP, attack, defence, attacks, isCatchable, isReleasable, evolution, evolutionLevel):
+    def __init__(self, variety = None, type = None, level = None, expLevel = None, exp = None, currentHP = None, maxHP = None, attack = None, defence = None, attacks = [], isCatchable = False, isReleasable = False, evolution = None):
         self.variety = variety
         self.type = type
         self.level = level
@@ -164,37 +165,12 @@ class Poketudiant:
         self.isCatchable = isCatchable
         self.isReleasable = isReleasable
         self.evolution = evolution
-        self.evolutionLevel = evolutionLevel
-    
-    # def createPoketudiant(name):
-    #     starter = Poketudiant()
-    #     exists = False
-    #     for p in poketudiants:
-    #         if p["Variété"] == name:
-    #             starter.variety = p["Variété"]
-    #             starter.type = p["Type"]
-    #             starter.isCatchable = p["Capturable"]
-    #             starter.evolution = p["Évolution"]
-    #             exists = True
-    #     if not exists:
-    #         return False
-    #     for s in statistics:
-    #         if s["Variété"] == name:
-    #             starter.attack = s["Attaque"]
-    #             starter.defence = s["Défense"]
-    #             starter.maxHP = s["PV max."]
-    #     for a in attacks:
-    #         if a["Type"] == starter.type:
-    #             starter.attacks.append(Attack(a["Attaque"], a["Type"], a["Puissance"]))
-    #     print("Wow")
-    #     print(starter)
-    #     return starter
 
     def getHealth(self):
         self.currentHP = self.maxHP
     
     def __str__(self):
-        return "%s" % (self.variety, self.type, self.level, self.exp, self.expLevel - self.exp, self.currentHP, self.maxHP, self.attack, self.defence)
+        return "%s" % (self.variety)
 
 games = []
 poketudiants = []
@@ -217,6 +193,60 @@ def templateRecords(file_path,arr):
             arr.append(dict(row))
 
 initializeRecords()
+
+def calculStatsPoketudiants(stat):
+    down = stat * 0.9
+    up = stat * 1.1
+    if random.uniform(0,1) == 0:
+        return int(random.uniform(down,stat))
+    else:
+        return int(random.uniform(stat,up))
+
+def calculExpPoketudiants(level):
+    return int(500 * ((1+level) / 2))
+
+def calculDamagePoketudiants(attack, defense, power):
+    return random.uniform(0.9,1.1) * (attack / defense) * power
+
+def createPoketudiant(name):
+    starter = Poketudiant()
+    exists = False
+    for p in poketudiants:
+        if p["Variété"] == name:
+            starter.variety = p["Variété"]
+            starter.type = p["Type"]
+            starter.isCatchable = p["Capturable"]
+            starter.evolution = p["Évolution"]
+            exists = True
+    if not exists:
+        return False
+    for s in statistics:
+        if s["Variété"] == name:
+            starter.attack = calculStatsPoketudiants(int(s["Attaque"]))
+            starter.defence = calculStatsPoketudiants(int(s["Défense"]))
+            starter.currentHP = calculStatsPoketudiants(int(s["PV max."]))
+            starter.maxHP = starter.currentHP
+    attSameType = []
+    attDiffType = []
+    for a in attacks:
+        if a["Type"] == starter.type:
+            attSameType.append(a)
+        elif a["Type"] != "Teacher":
+            attDiffType.append(a)
+    index = random.choice(attSameType)
+    starter.attacks.append(Attack(index["Attaque"], index["Type"], index["Puissance"]))
+    index = random.choice(attDiffType)
+    starter.attacks.append(Attack(index["Attaque"], index["Type"], index["Puissance"]))
+    starter.level = 1
+    starter.exp = 0
+    starter.expLevel = calculExpPoketudiants(int(starter.level))
+    starter.isReleasable = False if name == "Enseignant-dresseur" else True
+    return starter
+
+def createPlayer(client, game):
+    player = Player(client, game.map.spawns[len(game.players)][0], game.map.spawns[len(game.players)][1], len(game.players)+1)
+    player.poketudiants.append(createPoketudiant("Enseignant-dresseur"))
+    return player
 
 def sendMapForAll(game, clients):
     for c in clients:
@@ -342,17 +372,19 @@ def createGame(client, data):
         return False
 
 def joinGame(client, gameName, justCreated = 0):
-    for g in games:
-        if g.name == str(gameName) and maxPlayer > len(g.players): # the name specified is the same and the game is not full
-            g.players.append(Player(client, g.map.spawns[len(g.players)][0], g.map.spawns[len(g.players)][1], len(g.players)+1))
-            if not justCreated:
-            	client.send(("game joined\n").encode('utf-8'))
-            else:
-            	client.send(("game created\n").encode('utf-8'))
-            g.sendMap(getPlayer(g, client)) # send the map to the player
-            return True
-    client.send(("cannot join game\n").encode('utf-8'))
-    return False
+	for g in games:
+		if g.name == str(gameName) and maxPlayer > len(g.players): # the name specified is the same and the game is not full
+			player = createPlayer(client,g)
+			g.players.append(player)
+			if not justCreated:
+				client.send(("game joined\n").encode('utf-8'))
+			else:
+				client.send(("game created\n").encode('utf-8'))
+			g.sendMap(player) # send the map to the player
+			player.sendPoketudiants()
+			return True
+	client.send(("cannot join game\n").encode('utf-8'))
+	return False
 
 def printGames(client):
     client.send(("number of games " + str(len(games)) + "\n").encode('utf-8'))
