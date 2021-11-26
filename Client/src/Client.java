@@ -120,9 +120,9 @@ public class Client {
 	public void listenToServer() throws IOException {
 		inGame = true;
 		while (inGame) {
-			System.out.println("listening");
+			// System.out.println("listening");
 			String str = reader.readLine();
-			System.out.println(str);
+			//System.out.println(str);
 			if (str.contains("map")) readMap(str);
 			else if (str.contains("rival message")) {
 				String[] lStrings = str.split(" ", 4); 
@@ -137,9 +137,7 @@ public class Client {
 	public boolean createGame(String gameName) throws IOException {
 		writer.println("create game ".concat(gameName));
 		writer.flush();
-		String str = reader.readLine();
-		System.out.println(str);
-		return str.equals("game created");
+		return reader.readLine().equals("game created");
 	}
 
 	public boolean joinGame(String gameName) throws IOException {
@@ -150,13 +148,12 @@ public class Client {
 
 	public void readMap(String str) throws IOException {
 		emptyList();
-		System.out.println(str);
+		//System.out.println(str);
 		int width = Integer.parseInt(str.split(" ")[1]);
 		int height = Integer.parseInt(str.split(" ")[2]);
-		System.out.println(height);
 		for (int i = 0; i < height; i++) {
 			serverOutput.add(reader.readLine());
-			System.out.println(serverOutput.get(i));
+			// System.out.println(serverOutput.get(i));
 		}
 		map.drawMap(width);
 		map.requestFocus();
@@ -196,6 +193,7 @@ public class Client {
 	}
 
 	public void move(Direction direction) {
+		System.out.println("map move ".concat(direction.label));
 		writer.println("map move ".concat(direction.label));
 		writer.flush();
 	}

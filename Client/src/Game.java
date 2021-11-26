@@ -12,8 +12,6 @@ public class Game extends JPanel {
         add(map); // add the map on the panel
         add(chat); // add the chat on the panel
         startGame(client);
-        this.requestFocus();
-        this.addKeyListener(new InputListener(client));
     }
 
     public void startGame(Client client) {
@@ -29,5 +27,6 @@ public class Game extends JPanel {
         }, "Demon");
         daemon.setDaemon(true);
         daemon.start();
+        this.addKeyListener(new InputListener(client));
     }
 }

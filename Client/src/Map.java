@@ -63,7 +63,6 @@ public class Map extends JPanel{
                 add(picLabel);
             }
             if (++c == 15) break;
-            System.out.println(c);
         }
         revalidate();
         repaint();
