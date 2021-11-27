@@ -122,7 +122,7 @@ def startGame(indice):
                     player.sendMsgChat(clients, message[2])
                 elif (dataDecoded.startswith('poketudiant')):
                     datas = dataDecoded.split(" ", 2)
-                    if poketudiantManage(player, datas[1], datas[2]):
+                    if poketudiantManage(player, int(datas[1]), datas[2]):
                         player.sendPoketudiants()
                 elif (dataDecoded.startswith('exit game')):
                     game.players.remove(getPlayer(readable[0]))
