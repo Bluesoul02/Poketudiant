@@ -8,16 +8,14 @@ public class InputListener implements KeyListener{
 
     public InputListener(Client client) {
         this.client = client;
+        System.out.println("listener");
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
+    public synchronized void keyPressed(KeyEvent e) {
         long now = System.currentTimeMillis();
         if (now - last > threshold) {
+            last = now;
             switch(e.getKeyCode()) {
                 case KeyEvent.VK_UP:
                     client.move(Direction.UP);
@@ -36,6 +34,10 @@ public class InputListener implements KeyListener{
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public synchronized void keyReleased(KeyEvent e) {
+    }
+
+    @Override
+    public synchronized void keyTyped(KeyEvent e) {}
     
 }

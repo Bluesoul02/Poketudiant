@@ -120,9 +120,9 @@ public class Client {
 	public void listenToServer() throws IOException {
 		inGame = true;
 		while (inGame) {
-			// System.out.println("listening");
+			System.out.println("listening");
 			String str = reader.readLine();
-			//System.out.println(str);
+			System.out.println(str);
 			if (str.contains("map")) readMap(str);
 			else if (str.contains("rival message")) {
 				String[] lStrings = str.split(" ", 4); 
@@ -156,8 +156,6 @@ public class Client {
 			// System.out.println(serverOutput.get(i));
 		}
 		map.drawMap(width);
-		map.requestFocus();
-        map.addKeyListener(new InputListener(this));
 	}
 
 	public void sendMessage(String msg) {
@@ -193,7 +191,6 @@ public class Client {
 	}
 
 	public void move(Direction direction) {
-		System.out.println("map move ".concat(direction.label));
 		writer.println("map move ".concat(direction.label));
 		writer.flush();
 	}

@@ -14,7 +14,7 @@ public class Game extends JPanel {
         startGame(client);
     }
 
-    public void startGame(Client client) {
+    public synchronized void startGame(Client client) {
         Thread daemon = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -27,6 +27,5 @@ public class Game extends JPanel {
         }, "Demon");
         daemon.setDaemon(true);
         daemon.start();
-        this.addKeyListener(new InputListener(client));
     }
 }
