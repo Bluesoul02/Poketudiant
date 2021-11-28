@@ -5,6 +5,9 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.swing.JOptionPane;
+
 import java.net.SocketTimeoutException;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -26,6 +29,8 @@ public class Client {
 	private Chat chat;
 	private Map map;
 	private Team team;
+	private Encounter encounter;
+	// private Game game;
 	private boolean inGame;
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
 	private static final String ANSWER_SEARCH_SERVER = "i'm a poketudiant server";
@@ -90,28 +95,7 @@ public class Client {
 					str = reader.readLine();
 					serverOutput.add(str);
 				}
-			}
-
-			for (int i = 0; i < serverOutput.size(); i++) System.out.println(serverOutput.get(i));
-
-			// int choix;
-			// Scanner sc = new Scanner(System.in);
-			// System.out.println("Choose an option :");
-			// choix = sc.nextInt();
-			// String msg = "join game " + serverOutput.get(choix).split(" ",2)[1];
-			// msg = msg.substring(0, msg.lastIndexOf(" "));
-			// System.out.println(msg);
-			// writer.println(msg);
-			// writer.flush();
-
-			// str = reader.readLine();
-			// while (str != null) {
-			// 	serverOutput.add(str);
-			// 	System.out.println(str);
-			// 	str = reader.readLine();
-			// }
-
-			// sc.close();
+			}			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -131,7 +115,88 @@ public class Client {
 				chat.receiveMessage(rival, msg);
 			}
 			else if (str.contains("team")) receiveTeam(str);
+			else if (str.contains("encounter")) encounter(str.split(" ", 2)[1]); // remove encounter from the string 
 		}
+	}
+
+	public void encounter(String str) {
+		String next = str.split(" ")[0];
+		str = str.split(" ", 2)[1];
+		switch(next) {
+			case "new":
+				next = str.split(" ")[0];
+				map.setVisible(false);
+				encounter.setVisible(true);
+				break;
+
+			case "win":
+				JOptionPane.showConfirmDialog(encounter, "You won the battle", "Victory!", JOptionPane.PLAIN_MESSAGE);
+				map.setVisible(true);
+				encounter.setVisible(false);
+				break;
+
+			case "lose":
+				JOptionPane.showConfirmDialog(encounter, "You lost the battle...", "Defeat", JOptionPane.PLAIN_MESSAGE);
+				map.setVisible(true);
+				encounter.setVisible(false);
+				break;
+
+			case "escape":
+				next = str.split(" ")[0];
+				switch(next) {
+					case "ok":
+						JOptionPane.showConfirmDialog(encounter, "You successfully escaped!", "Escape", JOptionPane.PLAIN_MESSAGE);
+						map.setVisible(true);
+						encounter.setVisible(false);
+						map.requestFocus();
+						break;
+					
+					case "fail":
+						JOptionPane.showConfirmDialog(encounter, "You failed to escape...", "Escape", JOptionPane.PLAIN_MESSAGE);
+						break;
+				}
+				break;
+
+			case "action":
+				next = str.split(" ")[0];
+				break;
+
+			case "poketudiant":
+				next = str.split(" ")[0];
+				switch(next) {
+					case "xp":
+						break;
+
+					case "level":
+						break;
+
+					case "evolution":
+						break;
+
+					case "player":
+						break;
+
+					case "opponent":
+						break;
+				}
+				break;
+
+			case "catch":
+				next = str.split(" ")[0];
+				switch(next) {
+					case "ok":
+						break;
+					
+					case "fail":
+						break;
+				}
+				break;
+
+			default: 
+				System.out.println("invalid");
+				break;
+		}
+
 	}
 
 	public boolean createGame(String gameName) throws IOException {
@@ -180,7 +245,7 @@ public class Client {
 	}
 
 	public void movePoketudiant(int pos, Direction direction) {
-		System.out.println("poketudiant " + pos + " move ".concat(direction.label));
+		// System.out.println("poketudiant " + pos + " move ".concat(direction.label));
 		writer.println("poketudiant " + pos + " move ".concat(direction.label));
 		writer.flush();
 	}
@@ -192,6 +257,11 @@ public class Client {
 
 	public void move(Direction direction) {
 		writer.println("map move ".concat(direction.label));
+		writer.flush();
+	}
+
+	public void escape() {
+		writer.println("encounter action leave");
 		writer.flush();
 	}
 
@@ -214,6 +284,14 @@ public class Client {
 	public void setTeam(Team team) {
 		this.team = team;
 	}
+
+	public void setEncounter(Encounter encounter) {
+		this.encounter = encounter;
+	}
+
+	// public void setGame(Game game) {
+	// 	this.game = game;
+	// }
 
     public void close() {
         socket.close();
