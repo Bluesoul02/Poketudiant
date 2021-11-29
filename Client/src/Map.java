@@ -49,7 +49,7 @@ public class Map extends JPanel{
     public void drawMap(int width) {
         // is getting called too many times i think
         removeAll();
-        removeKeyListener(l);
+        if (getKeyListeners().length > 0) removeKeyListener(l);
         this.requestFocus();
         this.addKeyListener(l);
         System.out.println("drawMap");
