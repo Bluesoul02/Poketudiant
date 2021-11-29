@@ -14,6 +14,7 @@ public class InputListener implements KeyListener{
     @Override
     public synchronized void keyPressed(KeyEvent e) {
         long now = System.currentTimeMillis();
+        System.out.println(now - last);
         if (now - last > threshold) {
             last = now;
             switch(e.getKeyCode()) {

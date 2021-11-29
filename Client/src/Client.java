@@ -73,9 +73,13 @@ public class Client {
 		return Collections.emptyList();
 	}
 
+	public void quit() throws IOException {
+		s.close();
+	}
+
 	public void connectServer(String hostname) {
 		try {
-			if (s != null) s.close();
+			if (s != null) quit();
 			serverOutput.clear();
 			s = new Socket(InetAddress.getByName(hostname), PORTTCP);
 			OutputStream output = s.getOutputStream();
@@ -104,6 +108,7 @@ public class Client {
 	public void listenToServer() throws IOException {
 		inGame = true;
 		while (inGame) {
+			map.requestFocus();
 			System.out.println("listening");
 			String str = reader.readLine();
 			System.out.println(str);
@@ -122,11 +127,23 @@ public class Client {
 	public void encounter(String str) {
 		String next = str.split(" ")[0];
 		str = str.split(" ", 2)[1];
+		System.out.println(next);
 		switch(next) {
 			case "new":
 				next = str.split(" ")[0];
-				map.setVisible(false);
-				encounter.setVisible(true);
+				switch(next) {
+					case "wild":
+						map.setVisible(false);
+						encounter.setVisible(true);
+						encounter.fight(Integer.parseInt(str.split(" ")[1]), false);
+						break;
+
+					case "rival":
+						map.setVisible(false);
+						encounter.setVisible(true);
+						encounter.fight(Integer.parseInt(str.split(" ")[1]), true);
+						break;
+				}
 				break;
 
 			case "win":
@@ -157,8 +174,15 @@ public class Client {
 				}
 				break;
 
-			case "action":
+			case "enter":
 				next = str.split(" ")[0];
+				switch(next) {
+					case "action":
+						break;
+					
+					case "poketudiant":
+						break;
+				}
 				break;
 
 			case "poketudiant":
@@ -183,11 +207,17 @@ public class Client {
 
 			case "catch":
 				next = str.split(" ")[0];
+				System.out.println(next);
 				switch(next) {
 					case "ok":
+						JOptionPane.showConfirmDialog(encounter, "The poketudiant was captured succesffully!", "Capture", JOptionPane.PLAIN_MESSAGE);
+						map.setVisible(true);
+						encounter.setVisible(false);
+						map.requestFocus();
 						break;
 					
 					case "fail":
+						JOptionPane.showConfirmDialog(encounter, "Capture failed...", "Capture", JOptionPane.PLAIN_MESSAGE);
 						break;
 				}
 				break;
@@ -262,6 +292,11 @@ public class Client {
 
 	public void escape() {
 		writer.println("encounter action leave");
+		writer.flush();
+	}
+
+	public void capture() {
+		writer.println("encounter action catch");
 		writer.flush();
 	}
 
