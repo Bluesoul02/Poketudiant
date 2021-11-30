@@ -15,7 +15,7 @@ class Player:
         return False
 
     def moveRight(self, game):
-        if self.x < (game.width - 1):
+        if self.x < (game.map.width - 1):
             self.x += 1
             return True
         return False
@@ -27,7 +27,7 @@ class Player:
         return False
 
     def moveDown(self, game):
-        if self.x < (game.height - 1):
+        if self.x < (game.map.height - 1):
             self.x -= 1
             return True
         return False

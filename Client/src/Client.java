@@ -257,6 +257,7 @@ public class Client {
 
 	public void move(Direction direction) {
 		writer.println("map move ".concat(direction.label));
+		System.out.println("map move ".concat(direction.label));
 		writer.flush();
 	}
 

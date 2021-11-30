@@ -35,6 +35,31 @@ class Poketudiant:
 
     def getHealth(self):
         self.currentHP = self.maxHP
+
+    def levelUp(self):
+        self.level += 1
+        self.expLevel = self.calculExp(self.level)
+        self.exp = 0
+        self.getHealth()
+        if self.evolution:
+            if (self.level == 3) and (random.uniform(0.0,100.0) <= 20.0):
+                self.evolution()
+            elif (self.level == 4) and (random.uniform(0.0,100.0) <= 37.5):
+                self.evolution()
+            elif (self.level >= 5):
+                self.evolution()
+    
+    def evolution(self):
+        print("J'évolue")
+    
+    def calculExpTotal(level):
+        total = 0
+        for i in range(1,level):
+            total += int(500 * ((1+i) / 2))
+        return total
+
+    def calculExp(level):
+        return int(500 * ((1+level) / 2))
     
     def __str__(self):
         return "%s" % (self.variety)
@@ -46,12 +71,6 @@ def calculStatsPoketudiants(stat):
         return int(random.uniform(down,stat))
     else:
         return int(random.uniform(stat,up))
-
-def calculExpPoketudiants(level):
-    return int(500 * ((1+level) / 2))
-
-def calculDamagePoketudiants(attack, defense, power):
-    return random.uniform(0.9,1.1) * (attack / defense) * power
 
 def createPoketudiant(name):
     starter = Poketudiant()
@@ -84,7 +103,7 @@ def createPoketudiant(name):
     starter.attacks.append(Attack(index["Attaque"], index["Type"], index["Puissance"]))
     starter.level = 1
     starter.exp = 0
-    starter.expLevel = calculExpPoketudiants(int(starter.level))
+    starter.expLevel = Poketudiant.calculExp(int(starter.level))
     starter.isReleasable = False if name == "Enseignant-dresseur" else True
     return starter
 
