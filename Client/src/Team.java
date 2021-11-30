@@ -21,9 +21,10 @@ public class Team extends JPanel{
             if (selectedButton != null) {
                 if (direction == null) client.freePoketudiant(selectedButton.getPos());
                 else if ((direction == Direction.DOWN && 0 < selectedButton.getPos()) || 
-                (direction == Direction.UP && pokebuttons.size() > (selectedButton.getPos() + 1))) 
+                (direction == Direction.UP && pokebuttons.size() < (selectedButton.getPos() + 1)))
                     client.movePoketudiant(selectedButton.getPos(), direction);
             }
+            select.setText("");
         }
     }
 
@@ -61,6 +62,7 @@ public class Team extends JPanel{
         for (PokeButton pokebutton : pokebuttons) {
             remove(pokebutton);
         }
+        pokebuttons.clear();
         PokeButton button;
         int c = 0;
         for (Poketudiant poketudiant : poketudiants) {

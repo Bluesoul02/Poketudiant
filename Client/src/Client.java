@@ -126,21 +126,19 @@ public class Client {
 
 	public void encounter(String str) {
 		String next = str.split(" ")[0];
-		str = str.split(" ", 2)[1];
+		if (str.split(" ").length > 1) str = str.split(" ", 2)[1];
 		System.out.println(next);
 		switch(next) {
 			case "new":
 				next = str.split(" ")[0];
+				encounter.setNbPokmn(team.getNbPokmn());
+				map.setVisible(false);
 				switch(next) {
 					case "wild":
-						map.setVisible(false);
-						encounter.setVisible(true);
 						encounter.startFight(Integer.parseInt(str.split(" ")[1]), false);
 						break;
 
 					case "rival":
-						map.setVisible(false);
-						encounter.setVisible(true);
 						encounter.startFight(Integer.parseInt(str.split(" ")[1]), true);
 						break;
 				}
@@ -180,6 +178,7 @@ public class Client {
 				next = str.split(" ")[0];
 				switch(next) {
 					case "action":
+						encounter.waitAction();
 						break;
 					
 					case "poketudiant":
@@ -282,6 +281,11 @@ public class Client {
 			Integer.parseInt(lStrings[8]), lStrings[9], lStrings[10], lStrings[11], lStrings[12]));
 		}
 		team.drawTeam(poketudiants);
+	}
+
+	public void attack(String attack) {
+		writer.println("encounter action ".concat(attack));
+		writer.flush();
 	}
 
 	public void movePoketudiant(int pos, Direction direction) {
