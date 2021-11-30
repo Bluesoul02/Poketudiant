@@ -135,13 +135,13 @@ public class Client {
 					case "wild":
 						map.setVisible(false);
 						encounter.setVisible(true);
-						encounter.fight(Integer.parseInt(str.split(" ")[1]), false);
+						encounter.startFight(Integer.parseInt(str.split(" ")[1]), false);
 						break;
 
 					case "rival":
 						map.setVisible(false);
 						encounter.setVisible(true);
-						encounter.fight(Integer.parseInt(str.split(" ")[1]), true);
+						encounter.startFight(Integer.parseInt(str.split(" ")[1]), true);
 						break;
 				}
 				break;
@@ -149,13 +149,15 @@ public class Client {
 			case "win":
 				JOptionPane.showConfirmDialog(encounter, "You won the battle", "Victory!", JOptionPane.PLAIN_MESSAGE);
 				map.setVisible(true);
-				encounter.setVisible(false);
+				encounter.endEncounter();
+				map.requestFocus();
 				break;
 
 			case "lose":
 				JOptionPane.showConfirmDialog(encounter, "You lost the battle...", "Defeat", JOptionPane.PLAIN_MESSAGE);
 				map.setVisible(true);
-				encounter.setVisible(false);
+				encounter.endEncounter();
+				map.requestFocus();
 				break;
 
 			case "escape":
@@ -164,7 +166,7 @@ public class Client {
 					case "ok":
 						JOptionPane.showConfirmDialog(encounter, "You successfully escaped!", "Escape", JOptionPane.PLAIN_MESSAGE);
 						map.setVisible(true);
-						encounter.setVisible(false);
+						encounter.endEncounter();
 						map.requestFocus();
 						break;
 					
@@ -189,18 +191,26 @@ public class Client {
 				next = str.split(" ")[0];
 				switch(next) {
 					case "xp":
+						String xp = str.split(" ")[1];
+						JOptionPane.showMessageDialog(encounter, "Your poketudiant gained ".concat(xp).concat(" xp"), "XP", JOptionPane.PLAIN_MESSAGE);
 						break;
 
 					case "level":
+						String lvl = str.split(" ")[1];
+						JOptionPane.showMessageDialog(encounter, "Your poketudiant gained ".concat(lvl).concat(" level(s)"), "Level up", JOptionPane.PLAIN_MESSAGE);
 						break;
 
 					case "evolution":
+						String evo = str.split(" ")[1];
+						JOptionPane.showMessageDialog(encounter, "Your poketudiant evolved in ".concat(evo), "Evolution", JOptionPane.PLAIN_MESSAGE);
 						break;
 
 					case "player":
+						encounter.setInfo(str.split(" ")[1], str.split(" ")[2], str.split(" ")[3], str.split(" ")[4], str.split(" ")[5], str.split(" ")[6], str.split(" ")[7]);
 						break;
 
 					case "opponent":
+						encounter.setInfo(str.split(" ")[1], str.split(" ")[2], str.split(" ")[3]);
 						break;
 				}
 				break;
@@ -212,7 +222,7 @@ public class Client {
 					case "ok":
 						JOptionPane.showConfirmDialog(encounter, "The poketudiant was captured succesffully!", "Capture", JOptionPane.PLAIN_MESSAGE);
 						map.setVisible(true);
-						encounter.setVisible(false);
+						encounter.endEncounter();
 						map.requestFocus();
 						break;
 					
