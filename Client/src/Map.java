@@ -15,8 +15,11 @@ public class Map extends JPanel{
     private ImageIcon player;
     private Client client;
     private InputListener l;
+    private GridLayout gl;
     
     public Map(Client client) {
+        gl = new GridLayout();
+        this.setLayout(gl);
         this.client = client;
         client.setMap(this);
         try {
@@ -50,11 +53,9 @@ public class Map extends JPanel{
         // is getting called too many times i think
         removeAll();
         if (getKeyListeners().length > 0) removeKeyListener(l);
-        this.requestFocus();
         this.addKeyListener(l);
+        this.requestFocus();
         System.out.println("drawMap");
-        GridLayout gl = new GridLayout();
-        this.setLayout(gl);
         if (width > 15) width = 15;
         int c = 0;
         gl.setColumns(width);

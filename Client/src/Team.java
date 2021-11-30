@@ -81,4 +81,8 @@ public class Team extends JPanel{
         revalidate();
         repaint();
     }
+
+    public int getNbPokmn() {
+        return pokebuttons.size();
+    }
 }
