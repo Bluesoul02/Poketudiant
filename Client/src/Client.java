@@ -182,6 +182,9 @@ public class Client {
 						break;
 					
 					case "poketudiant":
+						JOptionPane.showConfirmDialog(encounter, "Choose a poketudiant in your team to send ", "Swap", JOptionPane.PLAIN_MESSAGE);
+						while (team.getSelectedPokmnIndex() == -1) ;
+						sendIndex(team.getSelectedPokmnIndex());
 						break;
 				}
 				break;
@@ -233,6 +236,7 @@ public class Client {
 
 			default: 
 				System.out.println("invalid");
+				// relancer la dernière instruction si pb
 				break;
 		}
 
@@ -265,6 +269,11 @@ public class Client {
 	public void sendMessage(String msg) {
 		//if (msg.equals("")) return;
 		writer.println("send message ".concat(msg));
+		writer.flush();
+	}
+
+	public void sendIndex(int index) {
+		writer.println("");
 		writer.flush();
 	}
 

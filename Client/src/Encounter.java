@@ -104,8 +104,8 @@ public class Encounter extends JPanel {
         image.setText(variety);
         this.lvl.setText(lvl);
         this.hp.setText(hp);
-        attack1.setText(attack1Name + " \n" + attack1Type);
-        attack2.setText(attack2Name + " \n" + attack2Type);
+        attack1.setText(attack1Name.concat(" \n").concat(attack1Type));
+        attack2.setText(attack2Name.concat(" \n").concat(attack2Type));
     }
 
     public void setInfo(String variety, String lvl, String hp) {
