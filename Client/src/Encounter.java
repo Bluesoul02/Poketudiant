@@ -9,6 +9,7 @@ public class Encounter extends JPanel {
 
     private JButton escape;
     private JButton capture;
+    private JButton swap;
     private JButton attack1;
     private JButton attack2;
     private JLabel nbPokmn;
@@ -22,7 +23,7 @@ public class Encounter extends JPanel {
     private boolean rival;
 
     public Encounter(Client client) {
-        this.setLayout(new GridLayout(6,2));
+        this.setLayout(new GridLayout(7,2));
 
         attack1 = new JButton("attack1 \n type");
         attack2 = new JButton("attack2 \n type");
@@ -34,12 +35,13 @@ public class Encounter extends JPanel {
         hpRival = new JLabel("XX %");
         image = new JLabel("image");
         imageRival = new JLabel("imageRival");
-
+        rival = false;
 
         escape = new JButton("Escape");
         escape.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 client.escape();
+                waitNextTurn();
             }
         });
 
@@ -47,6 +49,15 @@ public class Encounter extends JPanel {
         capture.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 client.capture();
+                waitNextTurn();
+            }
+        });
+
+        swap = new JButton("Switch");
+        swap.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                client.swap();
+                waitNextTurn();
             }
         });
 
@@ -74,6 +85,7 @@ public class Encounter extends JPanel {
         add(nbPokmn);
         add(attack1);
         add(attack2);
+        add(swap);
         add(capture);
         add(escape);
 
@@ -81,13 +93,15 @@ public class Encounter extends JPanel {
         attack2.setEnabled(false);
         this.escape.setEnabled(false);
         this.capture.setEnabled(false);
+        swap.setEnabled(false);
     }
 
     public void waitNextTurn() {
         attack1.setEnabled(false);
         attack2.setEnabled(false);
-        this.escape.setEnabled(false);
-        this.capture.setEnabled(false);
+        escape.setEnabled(false);
+        capture.setEnabled(false);
+        swap.setEnabled(false);
     }
 
     public void startFight(int nbPokmnRival, boolean rival) {
@@ -115,14 +129,16 @@ public class Encounter extends JPanel {
     }
 
     public void waitAction() {
+        System.out.println("waitAction");
         attack2.setEnabled(true);
         attack1.setEnabled(true);
-        if (!isRival()) {
-            this.escape.setEnabled(true);
-            this.capture.setEnabled(true);
-        } else {
+        swap.setEnabled(true);
+        if (isRival()) {
             this.escape.setEnabled(false);
             this.capture.setEnabled(false);
+        } else {
+            this.escape.setEnabled(true);
+            this.capture.setEnabled(true);
         }
     }
 

@@ -107,4 +107,12 @@ public class Team extends JPanel{
     public int getSelectedPokmnIndex() {
         return selectedButton != null ? selectedButton.getPos() : -1;
     }
+
+    public String getPokmnName(int index) {
+        return pokebuttons.get(index).getPoketudiant().getVariety();
+    }
+
+    public void resetSelectedPokmn() {
+        selectedButton = null;
+    }
 }

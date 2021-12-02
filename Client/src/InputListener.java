@@ -3,7 +3,7 @@ import java.awt.event.KeyListener;
 
 public class InputListener implements KeyListener{
     private Client client;
-    private final long threshold = 500;
+    private final long threshold = 250;
     private long last = System.currentTimeMillis();
 
     public InputListener(Client client) {
