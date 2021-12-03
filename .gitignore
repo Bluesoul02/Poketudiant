@@ -1,8 +1,6 @@
-/build/*
 *.pdf
 */.vscode
 .vscode
 /Client/bin/*
-/Server/build/*
 serverpoketudiant
 world.map

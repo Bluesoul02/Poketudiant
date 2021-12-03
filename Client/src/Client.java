@@ -30,7 +30,6 @@ public class Client {
 	private Map map;
 	private Team team;
 	private Encounter encounter;
-	// private Game game;
 	private boolean inGame;
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
 	private static final String ANSWER_SEARCH_SERVER = "i'm a poketudiant server";
@@ -284,6 +283,7 @@ public class Client {
 	public void swap() {
 		if (team.getNbPokmn() <= 1) {
 			JOptionPane.showConfirmDialog(encounter, "You only have one poketudiant...", "Switch", JOptionPane.PLAIN_MESSAGE);
+			encounter.waitAction();
 			return;
 		}
 		writer.println("encounter action switch");
@@ -333,6 +333,7 @@ public class Client {
 
 	public void capture() {
 		if (team.getNbPokmn() >= 3) {
+			encounter.waitAction();
 			JOptionPane.showConfirmDialog(encounter, "You can't capture any more poketudiant, you need to free one poketudiant", "Capture", JOptionPane.PLAIN_MESSAGE);
 			return;
 		}
@@ -363,10 +364,6 @@ public class Client {
 	public void setEncounter(Encounter encounter) {
 		this.encounter = encounter;
 	}
-
-	// public void setGame(Game game) {
-	// 	this.game = game;
-	// }
 
     public void close() {
         socket.close();
