@@ -72,10 +72,17 @@ public class Map extends JPanel{
                 
             }
         });
+
         gl = new GridLayout();
         this.setLayout(gl);
+        playerPos = null;
+        maxWidth = 15;
+        maxHeight = 15;
+        gl.setColumns(maxWidth);
+        gl.setRows(maxHeight);
         this.client = client;
         client.setMap(this);
+
         try {
             grass = new ImageIcon(ImageIO.read(new File("assets/grass.png")));
             Image image = grass.getImage();
@@ -120,10 +127,8 @@ public class Map extends JPanel{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
         l = new InputListener(client);
-        playerPos = null;
-        maxWidth = 15;
-        maxHeight = 15;
     }
 
     public void locatePlayer(List<String> map, int width) {
@@ -184,9 +189,6 @@ public class Map extends JPanel{
                 x++;
             }
         }
-        System.out.println(x + " " + y);
-        gl.setColumns(x);
-        gl.setRows(y);
         revalidate();
         repaint();
     }

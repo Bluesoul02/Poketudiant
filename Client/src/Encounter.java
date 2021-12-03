@@ -97,6 +97,7 @@ public class Encounter extends JPanel {
     }
 
     public void waitNextTurn() {
+        System.out.println("waitNextTurn");
         attack1.setEnabled(false);
         attack2.setEnabled(false);
         escape.setEnabled(false);
@@ -134,9 +135,11 @@ public class Encounter extends JPanel {
         attack1.setEnabled(true);
         swap.setEnabled(true);
         if (isRival()) {
+            System.out.println("rival");
             this.escape.setEnabled(false);
             this.capture.setEnabled(false);
         } else {
+            System.out.println("wild");
             this.escape.setEnabled(true);
             this.capture.setEnabled(true);
         }

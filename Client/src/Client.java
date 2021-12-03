@@ -282,6 +282,10 @@ public class Client {
 	}
 
 	public void swap() {
+		if (team.getNbPokmn() <= 1) {
+			JOptionPane.showConfirmDialog(encounter, "You only have one poketudiant...", "Switch", JOptionPane.PLAIN_MESSAGE);
+			return;
+		}
 		writer.println("encounter action switch");
 		writer.flush();
 	}
@@ -328,6 +332,10 @@ public class Client {
 	}
 
 	public void capture() {
+		if (team.getNbPokmn() >= 3) {
+			JOptionPane.showConfirmDialog(encounter, "You can't capture any more poketudiant, you need to free one poketudiant", "Capture", JOptionPane.PLAIN_MESSAGE);
+			return;
+		}
 		writer.println("encounter action catch");
 		writer.flush();
 	}
