@@ -1,8 +1,7 @@
-/build/*
 *.pdf
 */.vscode
 .vscode
+Server Python/__pycache__/*
 /Client/bin/*
-/Server/build/*
 serverpoketudiant
 world.map

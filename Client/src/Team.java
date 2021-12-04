@@ -20,10 +20,14 @@ public class Team extends JPanel{
         public void actionPerformed(ActionEvent e) {
             if (selectedButton != null) {
                 if (direction == null) client.freePoketudiant(selectedButton.getPos());
-                else if ((direction == Direction.DOWN && 0 < selectedButton.getPos()) || 
-                (direction == Direction.UP && pokebuttons.size() > (selectedButton.getPos() + 1))) 
+                else
                     client.movePoketudiant(selectedButton.getPos(), direction);
             }
+            select.setText("");
+            selectedButton = null;
+            up.setEnabled(false);
+            down.setEnabled(false);
+            free.setEnabled(false);
         }
     }
 
@@ -31,6 +35,9 @@ public class Team extends JPanel{
     private PokeButton selectedButton;
     private Client client;
     private List<PokeButton> pokebuttons;
+    private JButton up;
+    private JButton down;
+    private JButton free;
 
     public Team(Client client) {
         this.client = client;
@@ -45,9 +52,9 @@ public class Team extends JPanel{
         pokebuttons = new ArrayList<PokeButton>();
         select.setForeground(Color.WHITE);
         setBackground(Color.decode("#1e3d59"));
-        JButton up = new JButton("\u25B2");
-        JButton down = new JButton("\u25BC");
-        JButton free = new JButton("free");
+        up = new JButton("\u25B2");
+        down = new JButton("\u25BC");
+        free = new JButton("free");
         up.addActionListener(new MyActionListener(Direction.UP));
         down.addActionListener(new MyActionListener(Direction.DOWN));
         free.addActionListener(new MyActionListener(null));
@@ -55,12 +62,17 @@ public class Team extends JPanel{
         add(up);
         add(free);
         add(down);
+        selectedButton = null;
+        up.setEnabled(false);
+        down.setEnabled(false);
+        free.setEnabled(false);
     }
 
     public void drawTeam(List<Poketudiant> poketudiants) {
         for (PokeButton pokebutton : pokebuttons) {
             remove(pokebutton);
         }
+        pokebuttons.clear();
         PokeButton button;
         int c = 0;
         for (Poketudiant poketudiant : poketudiants) {
@@ -68,9 +80,15 @@ public class Team extends JPanel{
             button.setSize(100, 150);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    select.setText(poketudiant.getType().concat(
+                    select.setText(poketudiant.getVariety().concat(
                     " ".concat(String.valueOf(poketudiant.getLvl()))));
                     selectedButton = (PokeButton) e.getSource();
+                    if (selectedButton.getPos() <= 0) up.setEnabled(false);
+                    else up.setEnabled(true);
+                    if (selectedButton.getPos() >= pokebuttons.size() - 1) down.setEnabled(false);
+                    else down.setEnabled(true);
+                    if (poketudiant.getType().equals("teacher")) free.setEnabled(false);
+                    else free.setEnabled(true);
                     revalidate();
                     repaint();
                 }
@@ -84,5 +102,17 @@ public class Team extends JPanel{
 
     public int getNbPokmn() {
         return pokebuttons.size();
+    }
+
+    public int getSelectedPokmnIndex() {
+        return selectedButton != null ? selectedButton.getPos() : -1;
+    }
+
+    public String getPokmnName(int index) {
+        return pokebuttons.get(index).getPoketudiant().getVariety();
+    }
+
+    public void resetSelectedPokmn() {
+        selectedButton = null;
     }
 }

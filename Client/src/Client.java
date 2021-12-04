@@ -30,7 +30,6 @@ public class Client {
 	private Map map;
 	private Team team;
 	private Encounter encounter;
-	// private Game game;
 	private boolean inGame;
 	private static final String SEARCH_SERVER = "looking for poketudiant servers";
 	private static final String ANSWER_SEARCH_SERVER = "i'm a poketudiant server";
@@ -126,21 +125,18 @@ public class Client {
 
 	public void encounter(String str) {
 		String next = str.split(" ")[0];
-		str = str.split(" ", 2)[1];
-		System.out.println(next);
+		if (str.split(" ").length > 1) str = str.split(" ", 2)[1];
 		switch(next) {
 			case "new":
 				next = str.split(" ")[0];
+				encounter.setNbPokmn(team.getNbPokmn());
+				map.setVisible(false);
 				switch(next) {
 					case "wild":
-						map.setVisible(false);
-						encounter.setVisible(true);
 						encounter.startFight(Integer.parseInt(str.split(" ")[1]), false);
 						break;
 
 					case "rival":
-						map.setVisible(false);
-						encounter.setVisible(true);
 						encounter.startFight(Integer.parseInt(str.split(" ")[1]), true);
 						break;
 				}
@@ -180,29 +176,39 @@ public class Client {
 				next = str.split(" ")[0];
 				switch(next) {
 					case "action":
+						encounter.waitAction();
 						break;
 					
 					case "poketudiant":
+						JOptionPane.showConfirmDialog(encounter, "Choose a poketudiant in your team to send ", "Swap", JOptionPane.PLAIN_MESSAGE);
+						team.resetSelectedPokmn();
+						while (team.getSelectedPokmnIndex() == -1) System.out.println(team.getSelectedPokmnIndex());
+						sendIndex(team.getSelectedPokmnIndex());
+						team.resetSelectedPokmn();
 						break;
 				}
 				break;
 
 			case "poketudiant":
 				next = str.split(" ")[0];
+				String variety;
 				switch(next) {
 					case "xp":
-						String xp = str.split(" ")[1];
-						JOptionPane.showMessageDialog(encounter, "Your poketudiant gained ".concat(xp).concat(" xp"), "XP", JOptionPane.PLAIN_MESSAGE);
+						String xp = str.split(" ")[2];
+						variety = team.getPokmnName(Integer.parseInt(str.split(" ")[1]));
+						JOptionPane.showMessageDialog(encounter, "Your poketudiant ".concat(variety).concat(" gained ").concat(xp).concat(" xp"), "XP", JOptionPane.PLAIN_MESSAGE);
 						break;
 
 					case "level":
-						String lvl = str.split(" ")[1];
-						JOptionPane.showMessageDialog(encounter, "Your poketudiant gained ".concat(lvl).concat(" level(s)"), "Level up", JOptionPane.PLAIN_MESSAGE);
+						String lvl = str.split(" ")[2];
+						variety = team.getPokmnName(Integer.parseInt(str.split(" ")[1]));
+						JOptionPane.showMessageDialog(encounter, "Your poketudiant ".concat(variety).concat(" gained ").concat(lvl).concat(" level(s)"), "Level up", JOptionPane.PLAIN_MESSAGE);
 						break;
 
 					case "evolution":
-						String evo = str.split(" ")[1];
-						JOptionPane.showMessageDialog(encounter, "Your poketudiant evolved in ".concat(evo), "Evolution", JOptionPane.PLAIN_MESSAGE);
+						String evo = str.split(" ")[2];
+						variety = team.getPokmnName(Integer.parseInt(str.split(" ")[1]));
+						JOptionPane.showMessageDialog(encounter, "Your poketudiant ".concat(variety).concat(" evolved in ").concat(evo), "Evolution", JOptionPane.PLAIN_MESSAGE);
 						break;
 
 					case "player":
@@ -220,7 +226,7 @@ public class Client {
 				System.out.println(next);
 				switch(next) {
 					case "ok":
-						JOptionPane.showConfirmDialog(encounter, "The poketudiant was captured succesffully!", "Capture", JOptionPane.PLAIN_MESSAGE);
+						JOptionPane.showConfirmDialog(encounter, "The poketudiant was captured successfully!", "Capture", JOptionPane.PLAIN_MESSAGE);
 						map.setVisible(true);
 						encounter.endEncounter();
 						map.requestFocus();
@@ -236,7 +242,6 @@ public class Client {
 				System.out.println("invalid");
 				break;
 		}
-
 	}
 
 	public boolean createGame(String gameName) throws IOException {
@@ -269,6 +274,23 @@ public class Client {
 		writer.flush();
 	}
 
+	public void sendIndex(int index) {
+		System.out.println(index);
+		writer.println("encounter poketudiant index ".concat(Integer.toString(index)));
+		writer.flush();
+	}
+
+	public void swap() {
+		if (team.getNbPokmn() <= 1) {
+			JOptionPane.showConfirmDialog(encounter, "You only have one poketudiant...", "Switch", JOptionPane.PLAIN_MESSAGE);
+			encounter.waitAction();
+			return;
+		}
+		System.out.println("switch");
+		writer.println("encounter action switch");
+		writer.flush();
+	}
+
 	public void receiveTeam(String str) throws IOException {
 		ArrayList<Poketudiant> poketudiants = new ArrayList<Poketudiant>();
 		String poke;
@@ -282,6 +304,11 @@ public class Client {
 			Integer.parseInt(lStrings[8]), lStrings[9], lStrings[10], lStrings[11], lStrings[12]));
 		}
 		team.drawTeam(poketudiants);
+	}
+
+	public void attack(String attack) {
+		writer.println("encounter action ".concat(attack));
+		writer.flush();
 	}
 
 	public void movePoketudiant(int pos, Direction direction) {
@@ -307,6 +334,11 @@ public class Client {
 	}
 
 	public void capture() {
+		if (team.getNbPokmn() >= 3) {
+			encounter.waitAction();
+			JOptionPane.showConfirmDialog(encounter, "You can't capture any more poketudiant, you need to free one poketudiant", "Capture", JOptionPane.PLAIN_MESSAGE);
+			return;
+		}
 		writer.println("encounter action catch");
 		writer.flush();
 	}
@@ -334,10 +366,6 @@ public class Client {
 	public void setEncounter(Encounter encounter) {
 		this.encounter = encounter;
 	}
-
-	// public void setGame(Game game) {
-	// 	this.game = game;
-	// }
 
     public void close() {
         socket.close();
