@@ -140,9 +140,11 @@ public class Map extends JPanel{
             playerPos = new Dimension(0, 0); 
         }
         String mapLine;
-        for (int j = (int) playerPos.getHeight(); j < map.size(); j++) {
+        int heightP = (int) playerPos.getHeight() > 0 ? (int) playerPos.getHeight() - 1 : 0;
+        int widthP = (int) playerPos.getWidth() > 0 ? (int) playerPos.getWidth() - 1 : 0;
+        for (int j = heightP; j < map.size(); j++) {
             mapLine = map.get(j);
-            for(int i = (int) playerPos.getWidth(); i < width; i++) {
+            for(int i = widthP; i < width; i++) {
                 if ((mapLine.charAt(i)) == '0') playerPos = new Dimension(i, j);
             }
         }
@@ -168,7 +170,7 @@ public class Map extends JPanel{
 
         while (y % (maxHeight + 1) != 0) {
 
-            // System.out.println((y - 1) + maxHeight * factorY);
+            System.out.println((y - 1) + maxHeight * factorY);
             x = 1;
             mapLine = map.get((y - 1) + maxHeight * factorY < height ? (y - 1) + maxHeight * factorY : height - 1);
             y++;
@@ -176,7 +178,7 @@ public class Map extends JPanel{
             while (x % (maxWidth + 1) != 0) {
                 // System.out.println((x - 1) + maxWidth * factorX);
 
-                if ((x - 1) + maxWidth * factorX >= width || (y - 1) + maxHeight * factorY >= height) picLabel = new JLabel(water);
+                if ((x - 1) + maxWidth * factorX >= width || (y - 1) + maxHeight * factorY > height) picLabel = new JLabel(water);
                 else if ((mapLine.charAt((x - 1) + maxWidth * factorX)) == ' ') picLabel = new JLabel(grass);
                 else if ((mapLine.charAt((x - 1) + maxWidth * factorX)) == '*') picLabel = new JLabel(tallGrass);
                 else if ((mapLine.charAt((x - 1) + maxWidth * factorX)) == '+') picLabel = new JLabel(pokmnCenter);
