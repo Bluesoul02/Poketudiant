@@ -7,6 +7,13 @@ class Player:
         self.y  = y
         self.nbRival = nbRival
         self.poketudiants = []
+        self.inFight = 0
+    
+    def startFight(self):
+        self.inFight = 1
+    
+    def endFight(self):
+        self.inFight = 0
 
     def moveLeft(self):
         if self.x > 0:
@@ -22,13 +29,13 @@ class Player:
 
     def moveUp(self):
         if self.y > 0:
-            self.y += 1
+            self.y -= 1
             return True
         return False
 
     def moveDown(self, game):
-        if self.x < (game.map.height - 1):
-            self.x -= 1
+        if self.y < (game.map.height - 1):
+            self.y += 1
             return True
         return False
     
@@ -64,10 +71,10 @@ class Player:
         return True
 
     def sendMsgChat(self, clients, msg):
-    	message = "rival message " + str(self.client.getpeername()[0]) + " " + str(self.client.getpeername()[1]) + " : " + str(msg) + "\n"
-    	for c in clients:
-    		c.send((message + "\n").encode('utf-8'))
-    
+        message = "rival message " + str(self.client.getpeername()[0]) + " " + str(self.client.getpeername()[1]) + " : " + str(msg) + "\n"
+        for c in clients:
+            c.send((message + "\n").encode('utf-8'))
+
     def healPoketudiants(self):
         for p in self.poketudiants:
             p.getHealth()

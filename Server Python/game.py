@@ -13,12 +13,12 @@ class Game:
         return self.map.map.split("\n")[player.y][player.x]
     
     def playersPos(self, player):
-        for p in player:
+        for p in self.players:
             if (p != player) and (player.x == p.x) and (player.y == p.y):
                 return p
         return False
 
-    def checkPosition(self, player): # check if the player is on the poketudiant center, maybe start a fight with a poketudiant (percentage) or a player
+    def checkPosition(self, player):
         pos = self.getTypeCase(player)
         p=self.playersPos(player)
         if p:
@@ -38,11 +38,11 @@ class Game:
         mapSplit = map.map.split("\n")
         for p in self.players:
             if p.client == player.client:
-                mapSplit[p.x] = charReplacer(mapSplit[p.x], str(0), p.y)
+                mapSplit[p.y] = charReplacer(mapSplit[p.y], str(0), p.x)
             else:
-                mapSplit[p.x] = charReplacer(mapSplit[p.x], str(p.nbRival), p.y)
+                mapSplit[p.y] = charReplacer(mapSplit[p.y], str(p.nbRival), p.x)
         for line in mapSplit:
-        	player.client.send((line + "\n").encode('utf-8'))
+            player.client.send((line + "\n").encode('utf-8'))
 
     def __str__(self):
         return "%d %s" % (len(self.players), self.name)
@@ -60,6 +60,37 @@ def printGames(client):
     client.send(("number of games " + str(len(games)) + "\n").encode('utf-8'))
     for g in games:
         client.send((str(g) + "\n").encode('utf-8'))
+
+def getNextPoketudiant(player):
+    for p in player.poketudiants:
+        if p.currentHP:
+            return p
+
+def actionEncounter(message,fight):
+    print("Action encounter " + message + "\n")
+
+def manageEncounter(data, player):
+    print("manageEncounter\n")
+    fight = False
+    for f in fights:
+        if f.player == player:
+            fight = f
+    if not fight:
+        return False
+    if data[1] == "action" :
+        actionEncounter(data[2], fight)
+    elif data[1] == "poketudiant" :
+        print("Message poketudiant\n")
+
+def startPoketudiantFight(player, game):
+    player.inFight = 1
+    player.client.send(("encounter new wild 1" + "\n").encode('utf-8'))
+    poketudiantPlayer = getNextPoketudiant(player)
+    poketudiantSauvage = poketudiantRandom()
+    player.client.send(("encounter poketudiant player " + poketudiantPlayer.variety + " " + str(poketudiantPlayer.level) + " " + str(poketudiantPlayer.currentHP) + " " + poketudiantPlayer.attacks[0].name + " " + poketudiantPlayer.attacks[0].type + " " + poketudiantPlayer.attacks[1].name + " " + poketudiantPlayer.attacks[1].type + "\n").encode('utf-8'))
+    player.client.send(("encounter poketudiant opponent " + poketudiantSauvage.variety + " " + str(poketudiantSauvage.level) + " " + str(poketudiantSauvage.currentHP) + "\n").encode('utf-8'))
+    fights.append(FightPoketudiant(player,poketudiantPlayer,poketudiantSauvage))
+    player.client.send(("encounter enter action" + "\n").encode('utf-8'))
 
 def createGame(client, data):
     datas = data.split(" ",2)
@@ -109,14 +140,20 @@ def startGame(indice):
                 dataDecoded = data.decode('utf-8')
                 dataDecoded = dataDecoded[:-1] if dataDecoded.endswith("\n") else dataDecoded
                 player = getPlayer(game,readable[0])
+                print(dataDecoded)
                 if (dataDecoded.startswith('map move')):
                     if movement(dataDecoded,player,game):
-                        sendMapForAll(game,clients)
                         pos = game.checkPosition(player)
                         if pos == CaseType.POKETUDIANT:
-                            startPoketudiantFight()
+                            startPoketudiantFight(player, game)
                         elif pos == CaseType.RIVAL:
                             startRivalFight()
+                        else:
+                            sendMapForAll(game,clients)
+                elif (dataDecoded.startswith('encounter')):
+                    print("Ici 1")
+                    manageEncounter(dataDecoded.split(" ",1), player)
+                    print("Ici 2")
                 elif (dataDecoded.startswith('send message')):
                     message = dataDecoded.split(" ",2)
                     player.sendMsgChat(clients, message[2])

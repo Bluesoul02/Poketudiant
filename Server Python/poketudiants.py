@@ -32,25 +32,32 @@ class Poketudiant:
         self.isCatchable = isCatchable
         self.isReleasable = isReleasable
         self.evolution = evolution
+        self.attackFirstLevel = attack
+        self.defenceFirstLevel = defence
+        self.maxHPFirstLevel = maxHP
 
     def getHealth(self):
         self.currentHP = self.maxHP
 
     def levelUp(self):
-        self.level += 1
-        self.expLevel = self.calculExp(self.level)
-        self.exp = 0
-        self.getHealth()
-        if self.evolution:
-            if (self.level == 3) and (random.uniform(0.0,100.0) <= 20.0):
-                self.evolution()
-            elif (self.level == 4) and (random.uniform(0.0,100.0) <= 37.5):
-                self.evolution()
-            elif (self.level >= 5):
-                self.evolution()
+        if self.level < 10:
+            self.level += 1
+            self.expLevel = self.calculExp(self.level)
+            self.exp = 0
+            self.getHealth()
+            self.maxHP += self.maxHPFirstLevel*0.1
+            self.defence += self.defenceFirstLevel*0.1
+            self.attack += self.attackFirstLevel*0.1
+            if self.evolution:
+                if (self.level == 3) and (random.uniform(0.0,100.0) <= 20.0):
+                    self.evolution()
+                elif (self.level == 4) and (random.uniform(0.0,100.0) <= 37.5):
+                    self.evolution()
+                elif (self.level >= 5):
+                    self.evolution()
     
     def evolution(self):
-        print("J'évolue")
+        self = createAndGain(self.evolution, self.level)
     
     def calculExpTotal(level):
         total = 0
@@ -90,6 +97,9 @@ def createPoketudiant(name):
             starter.defence = calculStatsPoketudiants(int(s["Défense"]))
             starter.currentHP = calculStatsPoketudiants(int(s["PV max."]))
             starter.maxHP = starter.currentHP
+            starter.attackFirstLevel = starter.attack
+            starter.defenceFirstLevel = starter.defence
+            starter.maxHPFirstLevel = starter.maxHP
     attSameType = []
     attDiffType = []
     for a in attacks:
@@ -117,3 +127,11 @@ def poketudiantManage(player, indice, text):
     elif text == "free":
         return player.poketudiantFree(indice)
     return False
+
+def createAndGain(name, level):
+    poketudiant = createPoketudiant(name)
+    for i in range(1,level):
+        poketudiant.levelUp()
+
+def poketudiantRandom():
+    return createPoketudiant(random.choice(poketudiants)["Variété"])
