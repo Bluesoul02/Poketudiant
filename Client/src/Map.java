@@ -104,17 +104,17 @@ public class Map extends JPanel{
             rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             player = new ImageIcon(rescaled);
 
-            rival = new ImageIcon(ImageIO.read(new File("assets/player.png")));
+            rival = new ImageIcon(ImageIO.read(new File("assets/rival.png")));
             image = rival.getImage();
             rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             rival = new ImageIcon(rescaled);
 
-            rival2 = new ImageIcon(ImageIO.read(new File("assets/player.png")));
+            rival2 = new ImageIcon(ImageIO.read(new File("assets/rival2.png")));
             image = rival2.getImage();
             rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             rival2 = new ImageIcon(rescaled);
 
-            rival3 = new ImageIcon(ImageIO.read(new File("assets/player.png")));
+            rival3 = new ImageIcon(ImageIO.read(new File("assets/rival3.png")));
             image = rival3.getImage();
             rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             rival3 = new ImageIcon(rescaled);
@@ -127,7 +127,7 @@ public class Map extends JPanel{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         l = new InputListener(client);
     }
 

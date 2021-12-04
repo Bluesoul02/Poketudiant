@@ -1,6 +1,7 @@
 *.pdf
 */.vscode
 .vscode
+Server Python/__pycache__/*
 /Client/bin/*
 serverpoketudiant
 world.map

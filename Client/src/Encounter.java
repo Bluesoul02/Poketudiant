@@ -40,38 +40,38 @@ public class Encounter extends JPanel {
         escape = new JButton("Escape");
         escape.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                client.escape();
                 waitNextTurn();
+                client.escape();
             }
         });
 
         capture = new JButton("Catch");
         capture.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                client.capture();
                 waitNextTurn();
+                client.capture();
             }
         });
 
         swap = new JButton("Switch");
         swap.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                client.swap();
                 waitNextTurn();
+                client.swap();
             }
         });
 
         attack1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                client.attack("attack1");
                 waitNextTurn();
+                client.attack("attack1");
             }
         });
 
         attack2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                client.attack("attack2");
                 waitNextTurn();
+                client.attack("attack2");
             }
         });
 
@@ -131,9 +131,9 @@ public class Encounter extends JPanel {
 
     public void waitAction() {
         System.out.println("waitAction");
-        attack2.setEnabled(true);
-        attack1.setEnabled(true);
-        swap.setEnabled(true);
+        this.attack2.setEnabled(true);
+        this.attack1.setEnabled(true);
+        this.swap.setEnabled(true);
         if (isRival()) {
             System.out.println("rival");
             this.escape.setEnabled(false);

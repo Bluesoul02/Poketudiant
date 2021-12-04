@@ -286,6 +286,7 @@ public class Client {
 			encounter.waitAction();
 			return;
 		}
+		System.out.println("switch");
 		writer.println("encounter action switch");
 		writer.flush();
 	}
