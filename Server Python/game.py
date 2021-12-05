@@ -62,35 +62,125 @@ def printGames(client):
         client.send((str(g) + "\n").encode('utf-8'))
 
 def getNextPoketudiant(player):
-    for p in player.poketudiants:
-        if p.currentHP:
-            return p
+    for i in range(0,len(player.poketudiants)):
+        if player.poketudiants[i].currentHP > 0 :
+            return i
 
-def actionEncounter(message,fight):
-    print("Action encounter " + message + "\n")
-
-def manageEncounter(data, player):
-    print("manageEncounter\n")
+def actionEncounter(game,message,client):
     fight = False
+    player = getPlayer(game,client)
     for f in fights:
         if f.player == player:
             fight = f
-    if not fight:
-        return False
-    if data[1] == "action" :
-        actionEncounter(data[2], fight)
-    elif data[1] == "poketudiant" :
-        print("Message poketudiant\n")
+    poketudiant = player.poketudiants[fight.poketudiant]
+    if message == "leave":
+        if probaFuite(player.poketudiants[fight.poketudiant],fight.poketudiantSauvage):
+            player.client.send(("encounter escape ok\n").encode('utf-8'))
+            player.endFight()
+            fights.remove(fight)
+            return True
+        else:
+            player.client.send(("encounter escape fail\n").encode('utf-8'))
+    elif message == "catch":
+        if (probaCapture(fight.poketudiantSauvage.currentHP, fight.poketudiantSauvage.maxHP) >= 0.5):
+            player.capturePoketudiant(fight.poketudiantSauvage)
+            player.client.send(("encounter catch ok\n").encode('utf-8'))
+            player.sendPoketudiants()
+            player.endFight()
+            fights.remove(fight)
+            return True
+        else:
+            player.client.send(("encounter catch fail\n").encode('utf-8'))
+    elif message == "switch":
+        print("encounter enter poketudiant index")
+        player.client.send(("encounter enter poketudiant index\n").encode('utf-8'))
+        return True
+    elif message == "attack1" or message == "attack2":
+        if message == "attack1":
+            power = calculPuissance(poketudiant.attacks[0].type, fight.poketudiantSauvage.type, poketudiant.attacks[0].power)
+        elif message == "attack2":
+            power = calculPuissance(poketudiant.attacks[1].type, fight.poketudiantSauvage.type, poketudiant.attacks[1].power)
+        fight.poketudiantSauvage.currentHP = int(fight.poketudiantSauvage.currentHP - calculDamagePoketudiants(poketudiant.attack, poketudiant.defence, power))
+        fight.poketudiantSauvage.currentHP = 0 if fight.poketudiantSauvage.currentHP < 0 else fight.poketudiantSauvage.currentHP
+        if fight.poketudiantSauvage.currentHP <= 0:
+            player.client.send(("encounter KO opponent\n").encode('utf-8'))
+            player.client.send(("encounter win\n").encode('utf-8'))
+            exp = int((0.1 * (fight.poketudiantSauvage.calculExpTotal() + fight.poketudiantSauvage.exp)) / len(fight.participation))
+            for i in fight.participation:
+                player.poketudiants[i].gainExp(exp, client, i)
+            player.endFight()
+            fights.remove(fight)
+            return True
+    else:
+        player.client.send(("encounter forbidden action\n").encode('utf-8'))
+    if poketudiantRandomAttack(player,poketudiant,fight):
+        return True
+    player.client.send(("encounter enter action\n").encode('utf-8'))
+    player.client.send(("encounter poketudiant player " + poketudiant.variety + " " + str(poketudiant.level) + " " + str(poketudiant.currentHP) + " " + poketudiant.attacks[0].name + " " + poketudiant.attacks[0].type + " " + poketudiant.attacks[1].name + " " + poketudiant.attacks[1].type + "\n").encode('utf-8'))
+    player.client.send(("encounter poketudiant opponent " + fight.poketudiantSauvage.variety + " " + str(fight.poketudiantSauvage.level) + " " + str(fight.poketudiantSauvage.currentHP) + "\n").encode('utf-8'))
 
-def startPoketudiantFight(player, game):
-    player.inFight = 1
-    player.client.send(("encounter new wild 1" + "\n").encode('utf-8'))
-    poketudiantPlayer = getNextPoketudiant(player)
-    poketudiantSauvage = poketudiantRandom()
+def poketudiantRandomAttack(player,poketudiant,fight):
+    nbAttack = random.randint(0,1)
+    power = calculPuissance(fight.poketudiantSauvage.attacks[nbAttack].type, poketudiant.type, fight.poketudiantSauvage.attacks[nbAttack].power)
+    fight.player.poketudiants[fight.poketudiant].currentHP = int(fight.player.poketudiants[fight.poketudiant].currentHP - calculDamagePoketudiants(poketudiant.attack, poketudiant.defence, power))
+    fight.player.poketudiants[fight.poketudiant].currentHP = 0 if fight.player.poketudiants[fight.poketudiant].currentHP < 0 else fight.player.poketudiants[fight.poketudiant].currentHP
+    player.client.send(("encounter poketudiant player " + poketudiant.variety + " " + str(poketudiant.level) + " " + str(poketudiant.currentHP) + " " + poketudiant.attacks[0].name + " " + poketudiant.attacks[0].type + " " + poketudiant.attacks[1].name + " " + poketudiant.attacks[1].type + "\n").encode('utf-8'))
+    player.client.send(("encounter poketudiant opponent " + fight.poketudiantSauvage.variety + " " + str(fight.poketudiantSauvage.level) + " " + str(fight.poketudiantSauvage.currentHP) + "\n").encode('utf-8'))
+    if fight.player.poketudiants[fight.poketudiant].currentHP <= 0:
+        fight.tempo = True
+        if player.checkPoketudiantsStatus():
+            player.client.send(("encounter enter poketudiant index\n").encode('utf-8'))
+            return True
+        else:
+            player.client.send(("encounter KO player\n").encode('utf-8'))
+            player.client.send(("encounter lose\n").encode('utf-8'))
+            player.healPoketudiants()
+            player.loseFight()
+            player.sendPoketudiants()
+            player.endFight()
+            fights.remove(fight)
+            return True
+    return False
+
+def manageEncounter(game,data,client):
+    if data[1].startswith('action') :
+        actionEncounter(game,data[1].split(" ",1)[1],client)
+    elif data[1].startswith('poketudiant index') :
+        index = int(data[1].split(" ")[2])
+        fight = False
+        player = getPlayer(game,client)
+        for f in fights:
+            if f.player == player:
+                fight = f
+        if index >= len(player.poketudiants):
+            player.client.send(("encounter invalid poketudiant index\n").encode('utf-8'))
+            return False
+        if player.poketudiants[index].currentHP > 0:
+            fight.poketudiant = index
+            if index not in fight.participation:
+                fight.participation.append(index)
+        else:
+            player.client.send(("encounter enter poketudiant index\n").encode('utf-8'))
+            return True
+        poketudiant = player.poketudiants[fight.poketudiant]
+        if (not fight.tempo) and poketudiantRandomAttack(player,poketudiant,fight):
+            return True
+        fight.tempo = False
+        player.client.send(("encounter enter action\n").encode('utf-8'))
+        player.client.send(("encounter poketudiant player " + poketudiant.variety + " " + str(poketudiant.level) + " " + str(poketudiant.currentHP) + " " + poketudiant.attacks[0].name + " " + poketudiant.attacks[0].type + " " + poketudiant.attacks[1].name + " " + poketudiant.attacks[1].type + "\n").encode('utf-8'))
+        player.client.send(("encounter poketudiant opponent " + fight.poketudiantSauvage.variety + " " + str(fight.poketudiantSauvage.level) + " " + str(fight.poketudiantSauvage.currentHP) + "\n").encode('utf-8'))
+
+def startPoketudiantFight(game,client):
+    player = getPlayer(game,client)
+    player.startFight()
+    player.client.send(("encounter new wild 1\n").encode('utf-8'))
+    poketudiantPlayerIndice = getNextPoketudiant(player)
+    poketudiantPlayer = player.poketudiants[poketudiantPlayerIndice]
+    poketudiantSauvage = poketudiantRandom(poketudiantPlayer.level)
     player.client.send(("encounter poketudiant player " + poketudiantPlayer.variety + " " + str(poketudiantPlayer.level) + " " + str(poketudiantPlayer.currentHP) + " " + poketudiantPlayer.attacks[0].name + " " + poketudiantPlayer.attacks[0].type + " " + poketudiantPlayer.attacks[1].name + " " + poketudiantPlayer.attacks[1].type + "\n").encode('utf-8'))
     player.client.send(("encounter poketudiant opponent " + poketudiantSauvage.variety + " " + str(poketudiantSauvage.level) + " " + str(poketudiantSauvage.currentHP) + "\n").encode('utf-8'))
-    fights.append(FightPoketudiant(player,poketudiantPlayer,poketudiantSauvage))
-    player.client.send(("encounter enter action" + "\n").encode('utf-8'))
+    fights.append(FightPoketudiant(player,poketudiantPlayerIndice,poketudiantSauvage))
+    player.client.send(("encounter enter action\n").encode('utf-8'))
 
 def createGame(client, data):
     datas = data.split(" ",2)
@@ -132,6 +222,9 @@ def startGame(indice):
             data = readable[0].recv(4096)
             if len(data) == 0: # manage the fact that one player can exit the game
                 readable[0].close()
+                for f in fights:
+                    if f.player.client.fileno() == -1:
+                        fights.remove(f)
                 for p in game.players:
                     if p.client.fileno() == -1:
                         game.players.remove(p)
@@ -142,29 +235,32 @@ def startGame(indice):
                 player = getPlayer(game,readable[0])
                 print(dataDecoded)
                 if (dataDecoded.startswith('map move')):
-                    if movement(dataDecoded,player,game):
+                    if player.isInFight():
+                        readable[0].send(("encounter forbidden action\n").encode('utf-8'))
+                    elif movement(dataDecoded,player,game):
+                        sendMapForAll(game,clients)
                         pos = game.checkPosition(player)
                         if pos == CaseType.POKETUDIANT:
-                            startPoketudiantFight(player, game)
+                            startPoketudiantFight(game,readable[0])
                         elif pos == CaseType.RIVAL:
                             startRivalFight()
-                        else:
-                            sendMapForAll(game,clients)
                 elif (dataDecoded.startswith('encounter')):
-                    print("Ici 1")
-                    manageEncounter(dataDecoded.split(" ",1), player)
-                    print("Ici 2")
+                    manageEncounter(game,dataDecoded.split(" ",1), readable[0])
                 elif (dataDecoded.startswith('send message')):
                     message = dataDecoded.split(" ",2)
                     player.sendMsgChat(clients, message[2])
                 elif (dataDecoded.startswith('poketudiant')):
-                    datas = dataDecoded.split(" ", 2)
-                    if poketudiantManage(player, int(datas[1]), datas[2]):
-                        player.sendPoketudiants()
+                    if player.isInFight():
+                        readable[0].send(("encounter forbidden action\n").encode('utf-8'))
+                    else:
+                        datas = dataDecoded.split(" ", 2)
+                        if poketudiantManage(player, int(datas[1]), datas[2]):
+                            player.sendPoketudiants()
                 elif (dataDecoded.startswith('exit game')):
                     game.players.remove(getPlayer(readable[0]))
                     listenToClient(readable[0])
         clients = list(map(lambda player: player.client, game.players))
+        sendMapForAll(game,clients)
     for c in clients: # no player in the game = close the game and connections
         c.close()
     games.remove(game)

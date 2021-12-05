@@ -35,38 +35,61 @@ class Poketudiant:
         self.attackFirstLevel = attack
         self.defenceFirstLevel = defence
         self.maxHPFirstLevel = maxHP
+    
+    def loseXPFight(self):
+        totalExp = 0.2 * (self.calculExpTotal() + self.exp)
+        while totalExp > 0:
+            if (self.exp-totalExp < 0):
+                totalExp -= self.exp
+                self.level -=1
+                self.expLevel = calculExp(self.level)
+                self.exp = self.expLevel
+            else:
+                self.exp -= int(totalExp)
+                break
 
     def getHealth(self):
         self.currentHP = self.maxHP
+    
+    def gainExp(self, exp, client, index):
+        self.exp += exp
+        client.send(("encounter poketudiant xp " + str(index) + " " + str(exp) + "\n").encode('utf-8'))
+        if self.exp >= self.expLevel:
+            self.levelUp(index, client)
 
-    def levelUp(self):
+    def levelUp(self, index=None, client=None):
         if self.level < 10:
+            if client:
+                client.send(("encounter poketudiant level " + str(index) + " " + str(1) + "\n").encode('utf-8'))
             self.level += 1
-            self.expLevel = self.calculExp(self.level)
+            self.expLevel = calculExp(self.level)
             self.exp = 0
             self.getHealth()
-            self.maxHP += self.maxHPFirstLevel*0.1
-            self.defence += self.defenceFirstLevel*0.1
-            self.attack += self.attackFirstLevel*0.1
-            if self.evolution:
+            self.maxHP += int(self.maxHPFirstLevel*0.1)
+            self.defence += int(self.defenceFirstLevel*0.1)
+            self.attack += int(self.attackFirstLevel*0.1)
+            if self.evolution != "None":
                 if (self.level == 3) and (random.uniform(0.0,100.0) <= 20.0):
-                    self.evolution()
+                    if client:
+                        client.send(("encounter poketudiant evolution " + str(index) + " " + self.evolution + "\n").encode('utf-8'))
+                    self.getEvolution()
                 elif (self.level == 4) and (random.uniform(0.0,100.0) <= 37.5):
-                    self.evolution()
+                    if client:
+                        client.send(("encounter poketudiant evolution " + str(index) + " " + self.evolution + "\n").encode('utf-8'))
+                    self.getEvolution()
                 elif (self.level >= 5):
-                    self.evolution()
+                    if client:
+                        client.send(("encounter poketudiant evolution " + str(index) + " " + self.evolution + "\n").encode('utf-8'))
+                    self.getEvolution()
     
-    def evolution(self):
+    def getEvolution(self):
         self = createAndGain(self.evolution, self.level)
     
-    def calculExpTotal(level):
+    def calculExpTotal(self):
         total = 0
-        for i in range(1,level):
+        for i in range(1,self.level):
             total += int(500 * ((1+i) / 2))
         return total
-
-    def calculExp(level):
-        return int(500 * ((1+level) / 2))
     
     def __str__(self):
         return "%s" % (self.variety)
@@ -78,6 +101,9 @@ def calculStatsPoketudiants(stat):
         return int(random.uniform(down,stat))
     else:
         return int(random.uniform(stat,up))
+
+def calculExp(level):
+    return int(500 * ((1+level) / 2))
 
 def createPoketudiant(name):
     starter = Poketudiant()
@@ -108,12 +134,12 @@ def createPoketudiant(name):
         elif a["Type"] != "Teacher":
             attDiffType.append(a)
     index = random.choice(attSameType)
-    starter.attacks.append(Attack(index["Attaque"], index["Type"], index["Puissance"]))
+    starter.attacks.append(Attack(index["Attaque"], index["Type"], int(index["Puissance"])))
     index = random.choice(attDiffType)
-    starter.attacks.append(Attack(index["Attaque"], index["Type"], index["Puissance"]))
+    starter.attacks.append(Attack(index["Attaque"], index["Type"], int(index["Puissance"])))
     starter.level = 1
     starter.exp = 0
-    starter.expLevel = Poketudiant.calculExp(int(starter.level))
+    starter.expLevel = calculExp(int(starter.level))
     starter.isReleasable = False if name == "Enseignant-dresseur" else True
     return starter
 
@@ -132,6 +158,12 @@ def createAndGain(name, level):
     poketudiant = createPoketudiant(name)
     for i in range(1,level):
         poketudiant.levelUp()
+    return poketudiant
 
-def poketudiantRandom():
-    return createPoketudiant(random.choice(poketudiants)["Variété"])
+def poketudiantRandom(level):
+    randomName = random.choice(poketudiants)["Variété"]
+    while randomName == "Enseignant-dresseur":
+        randomName = random.choice(poketudiants)["Variété"]
+    poketudiant = createAndGain(randomName, random.randint(1,level))
+    poketudiant.exp = random.randint(5,(calculExp(poketudiant.level) - (calculExp(poketudiant.level) // 2)))
+    return poketudiant

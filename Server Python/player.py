@@ -9,11 +9,15 @@ class Player:
         self.poketudiants = []
         self.inFight = 0
     
+    def isInFight(self):
+        return self.inFight
+    
     def startFight(self):
         self.inFight = 1
     
     def endFight(self):
         self.inFight = 0
+        self.sendPoketudiants()
 
     def moveLeft(self):
         if self.x > 0:
@@ -37,6 +41,12 @@ class Player:
         if self.y < (game.map.height - 1):
             self.y += 1
             return True
+        return False
+
+    def checkPoketudiantsStatus(self):
+        for p in self.poketudiants:
+            if p.currentHP > 0:
+                return True
         return False
     
     def sendPoketudiants(self):
@@ -63,6 +73,10 @@ class Player:
         self.poketudiants[indice] = temp
         return True
 
+    def loseFight(self):
+        for p in self.poketudiants:
+            p.loseXPFight()
+
     def poketudiantFree(self, indice):
         if len(self.poketudiants) == 0 or indice > (len(self.poketudiants) - 1):
             return False
@@ -78,6 +92,9 @@ class Player:
     def healPoketudiants(self):
         for p in self.poketudiants:
             p.getHealth()
+            
+    def capturePoketudiant(self, poketudiant):
+        self.poketudiants.append(poketudiant)
 
     def __str__(self):
         return "%s" % (self.client)
