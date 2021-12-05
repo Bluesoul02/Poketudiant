@@ -82,46 +82,47 @@ public class Map extends JPanel{
         gl.setRows(maxHeight);
         this.client = client;
         client.setMap(this);
+        int caseDim = 55;
 
         try {
             grass = new ImageIcon(ImageIO.read(new File("assets/grass.png")));
             Image image = grass.getImage();
-            Image rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            Image rescaled = image.getScaledInstance(caseDim, caseDim, Image.SCALE_SMOOTH);
             grass = new ImageIcon(rescaled);
                         
             tallGrass = new ImageIcon(ImageIO.read(new File("assets/tallGrass.png")));
             image = tallGrass.getImage();
-            rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            rescaled = image.getScaledInstance(caseDim, caseDim, Image.SCALE_SMOOTH);
             tallGrass = new ImageIcon(rescaled);
 
             pokmnCenter = new ImageIcon(ImageIO.read(new File("assets/pokmnCenter.png")));
             image = pokmnCenter.getImage();
-            rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            rescaled = image.getScaledInstance(caseDim, caseDim, Image.SCALE_SMOOTH);
             pokmnCenter = new ImageIcon(rescaled);
 
             player = new ImageIcon(ImageIO.read(new File("assets/player.png")));
             image = player.getImage();
-            rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            rescaled = image.getScaledInstance(caseDim, caseDim, Image.SCALE_SMOOTH);
             player = new ImageIcon(rescaled);
 
             rival = new ImageIcon(ImageIO.read(new File("assets/rival.png")));
             image = rival.getImage();
-            rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            rescaled = image.getScaledInstance(caseDim, caseDim, Image.SCALE_SMOOTH);
             rival = new ImageIcon(rescaled);
 
             rival2 = new ImageIcon(ImageIO.read(new File("assets/rival2.png")));
             image = rival2.getImage();
-            rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            rescaled = image.getScaledInstance(caseDim, caseDim, Image.SCALE_SMOOTH);
             rival2 = new ImageIcon(rescaled);
 
             rival3 = new ImageIcon(ImageIO.read(new File("assets/rival3.png")));
             image = rival3.getImage();
-            rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            rescaled = image.getScaledInstance(caseDim, caseDim, Image.SCALE_SMOOTH);
             rival3 = new ImageIcon(rescaled);
 
             water = new ImageIcon(ImageIO.read(new File("assets/water.png")));
             image = water.getImage();
-            rescaled = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            rescaled = image.getScaledInstance(caseDim, caseDim, Image.SCALE_SMOOTH);
             water = new ImageIcon(rescaled);
 
         } catch (IOException e) {
@@ -145,7 +146,11 @@ public class Map extends JPanel{
         for (int j = heightP; j < map.size(); j++) {
             mapLine = map.get(j);
             for(int i = widthP; i < width; i++) {
-                if ((mapLine.charAt(i)) == '0') playerPos = new Dimension(i, j);
+                // System.out.println(i + " " + j);
+                if ((mapLine.charAt(i)) == '0') {
+                    playerPos = new Dimension(i, j);
+                    return;
+                }
             }
         }
     }
