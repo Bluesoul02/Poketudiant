@@ -1,12 +1,16 @@
 import random
 
-class FightPoketudiant:
-    def __init__(self, player, poketudiant, poketudiantSauvage):
+class Fight:
+    def __init__(self, player, poketudiant, poketudiantSauvage, rival=None):
         self.player = player
         self.poketudiant = poketudiant
-        self.poketudiantSauvage = poketudiantSauvage
         self.tempo = False
+        self.poketudiantSauvage = poketudiantSauvage
         self.participation = [poketudiant]
+        self.rival = rival
+        self.action = ""
+        self.hasAttacked = False
+        self.forceChange = False
 
 def calculDamagePoketudiants(attack, defense, power):
     return random.uniform(0.9,1.1) * (attack / defense) * power
@@ -21,9 +25,6 @@ def calculPuissance(type1, type2, power):
     elif type1 == "Teacher" and (type2 == "Noisy" or type2 == "Lazy" or type2 == "Motivated"):
         return power*2
     return power
-
-def startRivalFight():
-    print("Rival Fight\n")
 
 def probaCapture(pvEff, pvMax):
     return 2*max(0.5-(pvEff/pvMax),0)
