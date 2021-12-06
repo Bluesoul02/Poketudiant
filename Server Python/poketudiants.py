@@ -64,10 +64,10 @@ class Poketudiant:
             self.level += 1
             self.expLevel = calculExp(self.level)
             self.exp = 0
-            self.getHealth()
             self.maxHP += int(self.maxHPFirstLevel*0.1)
             self.defence += int(self.defenceFirstLevel*0.1)
             self.attack += int(self.attackFirstLevel*0.1)
+            self.getHealth()
             if self.evolution != "None":
                 if (self.level == 3) and (random.uniform(0.0,100.0) <= 20.0):
                     if client:
@@ -121,8 +121,8 @@ def createPoketudiant(name):
         if s["Variété"] == name:
             starter.attack = calculStatsPoketudiants(int(s["Attaque"]))
             starter.defence = calculStatsPoketudiants(int(s["Défense"]))
-            starter.currentHP = calculStatsPoketudiants(int(s["PV max."]))
-            starter.maxHP = starter.currentHP
+            starter.maxHP = calculStatsPoketudiants(int(s["PV max."]))
+            starter.currentHP = starter.maxHP
             starter.attackFirstLevel = starter.attack
             starter.defenceFirstLevel = starter.defence
             starter.maxHPFirstLevel = starter.maxHP
@@ -164,6 +164,15 @@ def poketudiantRandom(level):
     randomName = random.choice(poketudiants)["Variété"]
     while randomName == "Enseignant-dresseur":
         randomName = random.choice(poketudiants)["Variété"]
-    poketudiant = createAndGain(randomName, random.randint(1,level))
-    poketudiant.exp = random.randint(5,(calculExp(poketudiant.level) - (calculExp(poketudiant.level) // 2)))
+    levelUp = level
+    leveDown = level
+    if level != 10:
+    	levelUp = level + 1
+    if level != 1:
+    	leveDown = level - 1
+    poketudiant = createAndGain(randomName, random.randint(leveDown,levelUp))
+    expMax = calculExp(poketudiant.level) - (calculExp(poketudiant.level) // 2)
+    if expMax <= 250:
+    	expMax = 251
+    poketudiant.exp = random.randint(250,expMax)
     return poketudiant
