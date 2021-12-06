@@ -87,7 +87,7 @@ public class Team extends JPanel{
                     else up.setEnabled(true);
                     if (selectedButton.getPos() >= pokebuttons.size() - 1) down.setEnabled(false);
                     else down.setEnabled(true);
-                    if (poketudiant.getType().equals("teacher")) free.setEnabled(false);
+                    if (poketudiant.getType().toLowerCase().equals("teacher")) free.setEnabled(false);
                     else free.setEnabled(true);
                     revalidate();
                     repaint();
