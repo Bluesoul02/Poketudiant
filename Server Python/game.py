@@ -127,6 +127,8 @@ def fightAttack(message,poketudiant,fight):
     fight.hasAttacked = True
     if poketudiantAdverse.currentHP <= 0:
         if not fight.rival:
+            player.client.send(("encounter poketudiant player " + poketudiant.variety + " " + str(poketudiant.level) + " " + str(int((poketudiant.currentHP / poketudiant.maxHP) * 100)) + " " + poketudiant.attacks[0].name + " " + poketudiant.attacks[0].type + " " + poketudiant.attacks[1].name + " " + poketudiant.attacks[1].type + "\n").encode('utf-8'))
+            player.client.send(("encounter poketudiant opponent " + poketudiantAdverse.variety + " " + str(poketudiantAdverse.level) + " " + str(int((poketudiantAdverse.currentHP / poketudiantAdverse.maxHP) * 100)) + "\n").encode('utf-8'))
             player.client.send(("encounter KO opponent\n").encode('utf-8'))
             player.client.send(("encounter win\n").encode('utf-8'))
             exp = int((0.1 * (poketudiantAdverse.calculExpTotal() + poketudiantAdverse.exp)) / len(fight.participation))
@@ -152,6 +154,12 @@ def fightAttack(message,poketudiant,fight):
     return False
 
 def sendResults(fight):
+    fight2 = None
+    for f in fights:
+        if f.rival == fight.player:
+            fight2 = f
+            break
+    sendMajPoketudiantsFight(fight.player,fight.rival,fight.poketudiant,fight2.poketudiant)
     fight.player.client.send(("encounter KO opponent\n").encode('utf-8'))
     fight.player.client.send(("encounter win\n").encode('utf-8'))
     fight.player.endFight()
@@ -161,9 +169,7 @@ def sendResults(fight):
     fight.rival.loseFight()
     fight.rival.sendPoketudiants()
     fight.rival.endFight()
-    for f in fights:
-        if f.rival == fight.player:
-            fights.remove(f)
+    fights.remove(fight2)
     fights.remove(fight)
 
 def manageTour(fight1):
