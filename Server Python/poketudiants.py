@@ -107,6 +107,7 @@ def calculExp(level):
 
 def createPoketudiant(name):
     starter = Poketudiant()
+    starter.attacks = []
     exists = False
     for p in poketudiants:
         if p["Variété"] == name:
