@@ -5,9 +5,9 @@ statistics = []
 attacks = []
 
 def initializeRecords():
-    templateRecords("../poketudiants.csv",poketudiants)
-    templateRecords("../statistics.csv",statistics)
-    templateRecords("../attacks.csv",attacks)
+    templateRecords("poketudiants.csv",poketudiants)
+    templateRecords("statistics.csv",statistics)
+    templateRecords("attacks.csv",attacks)
 
 def templateRecords(file_path,arr):
     script_dir = os.path.dirname(__file__) # absolute directory the file is in

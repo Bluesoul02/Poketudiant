@@ -23,7 +23,9 @@ public class Encounter extends JPanel {
     private boolean rival;
 
     public Encounter(Client client) {
-        this.setLayout(new GridLayout(7,2));
+        GridLayout gl = new GridLayout(7,2);
+        gl.setHgap(10);
+        this.setLayout(gl);
 
         attack1 = new JButton("attack1 \n type");
         attack2 = new JButton("attack2 \n type");
@@ -108,25 +110,25 @@ public class Encounter extends JPanel {
     public void startFight(int nbPokmnRival, boolean rival) {
         this.setVisible(true);
         this.rival = rival;
-        this.nbPokmnRival.setText(Integer.toString(nbPokmnRival));
+        this.nbPokmnRival.setText("nombre de poketudiant : ".concat(Integer.toString(nbPokmnRival)));
     }
 
     public void setNbPokmn(int nbPokmn) {
-        this.nbPokmn.setText(Integer.toString(nbPokmn));
+        this.nbPokmn.setText("nombre de poketudiant : ".concat(Integer.toString(nbPokmn)));
     }
 
     public void setInfo(String variety, String lvl, String hp, String attack1Name, String attack1Type, String attack2Name, String attack2Type) {
         image.setText(variety);
-        this.lvl.setText(lvl);
-        this.hp.setText(hp);
+        this.lvl.setText("level : ".concat(lvl));
+        this.hp.setText("HP : ".concat(hp));
         attack1.setText(attack1Name.concat(" \n").concat(attack1Type));
         attack2.setText(attack2Name.concat(" \n").concat(attack2Type));
     }
 
     public void setInfo(String variety, String lvl, String hp) {
         imageRival.setText(variety);
-        lvlRival.setText(lvl);
-        hpRival.setText(hp);
+        lvlRival.setText("level : ".concat(lvl));
+        hpRival.setText("HP : ".concat(hp));
     }
 
     public void waitAction() {

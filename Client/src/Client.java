@@ -51,7 +51,7 @@ public class Client {
 		try {
 			listOfInetAddress.clear();
 			socket.send(send);
-			socket.setSoTimeout(2000);
+			socket.setSoTimeout(750);
 
 			while (true) {
 				socket.receive(receive);
