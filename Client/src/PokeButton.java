@@ -6,7 +6,7 @@ public class PokeButton extends JButton{
 
     public PokeButton(int pos, Poketudiant poketudiant) {
         super(poketudiant.getVariety().concat(
-            " ".concat(String.valueOf(poketudiant.getLvl()))));
+            " lvl : ".concat(String.valueOf(poketudiant.getLvl()))));
         this.pos = pos;
         this.poketudiant = poketudiant;
     }
