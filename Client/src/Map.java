@@ -75,7 +75,7 @@ public class Map extends JPanel{
 
         gl = new GridLayout();
         this.setLayout(gl);
-        playerPos = null;
+        playerPos = new Dimension(0, 0);
         maxWidth = 15;
         maxHeight = 15;
         gl.setColumns(maxWidth);
@@ -133,13 +133,14 @@ public class Map extends JPanel{
     }
 
     public void locatePlayer(List<String> map, int width) {
-        if (playerPos != null) {
-            double widthPlayer = playerPos.getWidth();
-            double heightPlayer = playerPos.getHeight();
-            playerPos.setSize(widthPlayer > 0 ? widthPlayer - 1 : widthPlayer, heightPlayer > 0 ? heightPlayer - 1 : heightPlayer); ; // width is x and height is y
-        } else {
-            playerPos = new Dimension(0, 0); 
-        }
+        // if (playerPos.equals(new Dimension(0, 0))) {
+        //     System.out.println("playerPos exist");
+        //     double widthPlayer = playerPos.getWidth();
+        //     double heightPlayer = playerPos.getHeight();
+        //     // width is x and height is y
+        //     playerPos.setSize(widthPlayer > 0 ? widthPlayer - 1 : widthPlayer, heightPlayer > 0 ? heightPlayer - 1 : heightPlayer);
+        // }
+        playerPos = new Dimension(0, 0); 
         String mapLine;
         int heightP = (int) playerPos.getHeight() > 0 ? (int) playerPos.getHeight() - 1 : 0;
         int widthP = (int) playerPos.getWidth() > 0 ? (int) playerPos.getWidth() - 1 : 0;
