@@ -108,8 +108,8 @@ def actionEncounter(game,message,client):
     if poketudiantRandomAttack(player,poketudiant,fight):
         return True
     player.client.send(("encounter enter action\n").encode('utf-8'))
-    player.client.send(("encounter poketudiant player " + poketudiant.variety + " " + str(poketudiant.level) + " " + str(poketudiant.currentHP) + " " + poketudiant.attacks[0].name + " " + poketudiant.attacks[0].type + " " + poketudiant.attacks[1].name + " " + poketudiant.attacks[1].type + "\n").encode('utf-8'))
-    player.client.send(("encounter poketudiant opponent " + fight.poketudiantSauvage.variety + " " + str(fight.poketudiantSauvage.level) + " " + str(fight.poketudiantSauvage.currentHP) + "\n").encode('utf-8'))
+    player.client.send(("encounter poketudiant player " + poketudiant.variety + " " + str(poketudiant.level) + " " + str(int((poketudiant.currentHP / poketudiant.maxHP) * 100)) + " " + poketudiant.attacks[0].name + " " + poketudiant.attacks[0].type + " " + poketudiant.attacks[1].name + " " + poketudiant.attacks[1].type + "\n").encode('utf-8'))
+    player.client.send(("encounter poketudiant opponent " + fight.poketudiantSauvage.variety + " " + str(fight.poketudiantSauvage.level) + " " + str(int((fight.poketudiantSauvage.currentHP / fight.poketudiantSauvage.maxHP) * 100)) + "\n").encode('utf-8'))
 
 def fightAttack(message,poketudiant,fight):
     player = fight.player
@@ -202,8 +202,8 @@ def poketudiantRandomAttack(player,poketudiant,fight):
     power = calculPuissance(fight.poketudiantSauvage.attacks[nbAttack].type, poketudiant.type, fight.poketudiantSauvage.attacks[nbAttack].power)
     fight.player.poketudiants[fight.poketudiant].currentHP = int(fight.player.poketudiants[fight.poketudiant].currentHP - calculDamagePoketudiants(poketudiant.attack, poketudiant.defence, power))
     fight.player.poketudiants[fight.poketudiant].currentHP = 0 if fight.player.poketudiants[fight.poketudiant].currentHP < 0 else fight.player.poketudiants[fight.poketudiant].currentHP
-    player.client.send(("encounter poketudiant player " + poketudiant.variety + " " + str(poketudiant.level) + " " + str(poketudiant.currentHP) + " " + poketudiant.attacks[0].name + " " + poketudiant.attacks[0].type + " " + poketudiant.attacks[1].name + " " + poketudiant.attacks[1].type + "\n").encode('utf-8'))
-    player.client.send(("encounter poketudiant opponent " + fight.poketudiantSauvage.variety + " " + str(fight.poketudiantSauvage.level) + " " + str(fight.poketudiantSauvage.currentHP) + "\n").encode('utf-8'))
+    player.client.send(("encounter poketudiant player " + poketudiant.variety + " " + str(poketudiant.level) + " " + str(int((poketudiant.currentHP / poketudiant.maxHP) * 100)) + " " + poketudiant.attacks[0].name + " " + poketudiant.attacks[0].type + " " + poketudiant.attacks[1].name + " " + poketudiant.attacks[1].type + "\n").encode('utf-8'))
+    player.client.send(("encounter poketudiant opponent " + fight.poketudiantSauvage.variety + " " + str(fight.poketudiantSauvage.level) + " " + str(int((fight.poketudiantSauvage.currentHP / fight.poketudiantSauvage.maxHP) * 100)) + "\n").encode('utf-8'))
     if fight.player.poketudiants[fight.poketudiant].currentHP <= 0:
         fight.tempo = True
         if player.checkPoketudiantsStatus():
@@ -258,8 +258,8 @@ def manageEncounter(game,data,client):
             return True
         fight.tempo = False
         player.client.send(("encounter enter action\n").encode('utf-8'))
-        player.client.send(("encounter poketudiant player " + poketudiant.variety + " " + str(poketudiant.level) + " " + str(poketudiant.currentHP) + " " + poketudiant.attacks[0].name + " " + poketudiant.attacks[0].type + " " + poketudiant.attacks[1].name + " " + poketudiant.attacks[1].type + "\n").encode('utf-8'))
-        player.client.send(("encounter poketudiant opponent " + fight.poketudiantSauvage.variety + " " + str(fight.poketudiantSauvage.level) + " " + str(fight.poketudiantSauvage.currentHP) + "\n").encode('utf-8'))
+        player.client.send(("encounter poketudiant player " + poketudiant.variety + " " + str(poketudiant.level) + " " + str(int((poketudiant.currentHP / poketudiant.maxHP) * 100)) + " " + poketudiant.attacks[0].name + " " + poketudiant.attacks[0].type + " " + poketudiant.attacks[1].name + " " + poketudiant.attacks[1].type + "\n").encode('utf-8'))
+        player.client.send(("encounter poketudiant opponent " + fight.poketudiantSauvage.variety + " " + str(fight.poketudiantSauvage.level) + " " + str(int((fight.poketudiantSauvage.currentHP / fight.poketudiantSauvage.maxHP) * 100)) + "\n").encode('utf-8'))
 
 def startPoketudiantFight(game,client):
     player = getPlayer(game,client)
@@ -268,8 +268,8 @@ def startPoketudiantFight(game,client):
     poketudiantPlayerIndice = getNextPoketudiant(player)
     poketudiantPlayer = player.poketudiants[poketudiantPlayerIndice]
     poketudiantSauvage = poketudiantRandom(poketudiantPlayer.level)
-    player.client.send(("encounter poketudiant player " + poketudiantPlayer.variety + " " + str(poketudiantPlayer.level) + " " + str(poketudiantPlayer.currentHP) + " " + poketudiantPlayer.attacks[0].name + " " + poketudiantPlayer.attacks[0].type + " " + poketudiantPlayer.attacks[1].name + " " + poketudiantPlayer.attacks[1].type + "\n").encode('utf-8'))
-    player.client.send(("encounter poketudiant opponent " + poketudiantSauvage.variety + " " + str(poketudiantSauvage.level) + " " + str(poketudiantSauvage.currentHP) + "\n").encode('utf-8'))
+    player.client.send(("encounter poketudiant player " + poketudiantPlayer.variety + " " + str(poketudiantPlayer.level) + " " + str(int((poketudiantPlayer.currentHP / poketudiantPlayer.maxHP) * 100)) + " " + poketudiantPlayer.attacks[0].name + " " + poketudiantPlayer.attacks[0].type + " " + poketudiantPlayer.attacks[1].name + " " + poketudiantPlayer.attacks[1].type + "\n").encode('utf-8'))
+    player.client.send(("encounter poketudiant opponent " + poketudiantSauvage.variety + " " + str(poketudiantSauvage.level) + " " + str(int((poketudiantSauvage.currentHP / poketudiantSauvage.maxHP) * 100)) + "\n").encode('utf-8'))
     fights.append(Fight(player,poketudiantPlayerIndice,poketudiantSauvage))
     player.client.send(("encounter enter action\n").encode('utf-8'))
 
@@ -292,10 +292,10 @@ def startRivalFight(game,player1):
 def sendMajPoketudiantsFight(player1,player2,poketudiantPlayer1Indice,poketudiantPlayer2Indice):
     poketudiantPlayer1 = player1.poketudiants[poketudiantPlayer1Indice]
     poketudiantPlayer2 = player2.poketudiants[poketudiantPlayer2Indice]
-    player1.client.send(("encounter poketudiant player " + poketudiantPlayer1.variety + " " + str(poketudiantPlayer1.level) + " " + str(poketudiantPlayer1.currentHP) + " " + poketudiantPlayer1.attacks[0].name + " " + poketudiantPlayer1.attacks[0].type + " " + poketudiantPlayer1.attacks[1].name + " " + poketudiantPlayer1.attacks[1].type + "\n").encode('utf-8'))
-    player1.client.send(("encounter poketudiant opponent " + poketudiantPlayer2.variety + " " + str(poketudiantPlayer2.level) + " " + str(poketudiantPlayer2.currentHP) + "\n").encode('utf-8'))
-    player2.client.send(("encounter poketudiant player " + poketudiantPlayer2.variety + " " + str(poketudiantPlayer2.level) + " " + str(poketudiantPlayer2.currentHP) + " " + poketudiantPlayer2.attacks[0].name + " " + poketudiantPlayer2.attacks[0].type + " " + poketudiantPlayer2.attacks[1].name + " " + poketudiantPlayer2.attacks[1].type + "\n").encode('utf-8'))
-    player2.client.send(("encounter poketudiant opponent " + poketudiantPlayer1.variety + " " + str(poketudiantPlayer1.level) + " " + str(poketudiantPlayer1.currentHP) + "\n").encode('utf-8'))
+    player1.client.send(("encounter poketudiant player " + poketudiantPlayer1.variety + " " + str(poketudiantPlayer1.level) + " " + str(int((poketudiantPlayer1.currentHP / poketudiantPlayer1.maxHP) * 100)) + " " + poketudiantPlayer1.attacks[0].name + " " + poketudiantPlayer1.attacks[0].type + " " + poketudiantPlayer1.attacks[1].name + " " + poketudiantPlayer1.attacks[1].type + "\n").encode('utf-8'))
+    player1.client.send(("encounter poketudiant opponent " + poketudiantPlayer2.variety + " " + str(poketudiantPlayer2.level) + " " + str(int((poketudiantPlayer2.currentHP / poketudiantPlayer2.maxHP) * 100)) + "\n").encode('utf-8'))
+    player2.client.send(("encounter poketudiant player " + poketudiantPlayer2.variety + " " + str(poketudiantPlayer2.level) + " " + str(int((poketudiantPlayer2.currentHP / poketudiantPlayer2.maxHP) * 100)) + " " + poketudiantPlayer2.attacks[0].name + " " + poketudiantPlayer2.attacks[0].type + " " + poketudiantPlayer2.attacks[1].name + " " + poketudiantPlayer2.attacks[1].type + "\n").encode('utf-8'))
+    player2.client.send(("encounter poketudiant opponent " + poketudiantPlayer1.variety + " " + str(poketudiantPlayer1.level) + " " + str(int((poketudiantPlayer1.currentHP / poketudiantPlayer1.maxHP) * 100)) + "\n").encode('utf-8'))
 
 def sendActions(player1,player2):
     player1.client.send(("encounter enter action\n").encode('utf-8'))
