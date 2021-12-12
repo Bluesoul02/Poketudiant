@@ -106,20 +106,26 @@ public class Client {
 
 	public void listenToServer() throws IOException {
 		inGame = true;
+		String str;
+		String firstr;
+		String rival;
+		String[] lStrings;
+		String msg;
 		while (inGame) {
 			map.requestFocus();
 			System.out.println("listening");
-			String str = reader.readLine();
+			str = reader.readLine();
 			System.out.println(str);
-			if (str.contains("map")) readMap(str);
+			firstr = str.split(" ", 2)[0];
+			if (firstr.equals("map")) readMap(str);
 			else if (str.contains("rival message")) {
-				String[] lStrings = str.split(" ", 4); 
-				String rival = lStrings[2];
-				String msg = lStrings[3];
+				lStrings = str.split(" ", 4); 
+				rival = lStrings[2];
+				msg = lStrings[3];
 				chat.receiveMessage(rival, msg);
 			}
 			else if (str.contains("team")) receiveTeam(str);
-			else if (str.contains("encounter")) encounter(str.split(" ", 2)[1]); // remove encounter from the string 
+			else if (firstr.equals("encounter")) encounter(str.split(" ", 2)[1]); // remove encounter from the string 
 		}
 	}
 

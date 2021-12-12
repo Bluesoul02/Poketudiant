@@ -1,11 +1,19 @@
 import java.io.IOException;
 import javax.swing.JPanel;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Game extends JPanel {
     
     public Game(Client client) {
         client.emptyList(); // clear the list
         // client.setGame(this);
+        GameFrame.getInstance().addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                client.close();
+            }
+        });
         Map map = new Map(client); 
         Chat chat = new Chat(client);
         Team team = new Team(client);

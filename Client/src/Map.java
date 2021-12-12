@@ -82,7 +82,7 @@ public class Map extends JPanel{
         gl.setRows(maxHeight);
         this.client = client;
         client.setMap(this);
-        int caseDim = 55;
+        int caseDim = 45;
 
         try {
             grass = new ImageIcon(ImageIO.read(new File("assets/grass.png")));
