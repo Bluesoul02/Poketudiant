@@ -77,6 +77,7 @@ public class Encounter extends JPanel {
             }
         });
 
+        // the order of adding is important for the display
         add(nbPokmnRival);
         add(image);
         add(imageRival);
@@ -91,6 +92,7 @@ public class Encounter extends JPanel {
         add(capture);
         add(escape);
 
+        //disable buttons 
         attack1.setEnabled(false);
         attack2.setEnabled(false);
         this.escape.setEnabled(false);
@@ -98,6 +100,7 @@ public class Encounter extends JPanel {
         swap.setEnabled(false);
     }
 
+    // disable buttons when an action is done
     public void waitNextTurn() {
         System.out.println("waitNextTurn");
         attack1.setEnabled(false);
@@ -107,16 +110,19 @@ public class Encounter extends JPanel {
         swap.setEnabled(false);
     }
 
+    // initialize the encounter
     public void startFight(int nbPokmnRival, boolean rival) {
         this.setVisible(true);
         this.rival = rival;
         this.nbPokmnRival.setText("nombre de poketudiant : ".concat(Integer.toString(nbPokmnRival)));
     }
 
+    //display the total number of pokemons
     public void setNbPokmn(int nbPokmn) {
         this.nbPokmn.setText("nombre de poketudiant : ".concat(Integer.toString(nbPokmn)));
     }
 
+    // change the info for the player
     public void setInfo(String variety, String lvl, String hp, String attack1Name, String attack1Type, String attack2Name, String attack2Type) {
         image.setText(variety);
         this.lvl.setText("level : ".concat(lvl));
@@ -125,12 +131,14 @@ public class Encounter extends JPanel {
         attack2.setText(attack2Name.concat(" \n").concat(attack2Type));
     }
 
+    //change info for the rival
     public void setInfo(String variety, String lvl, String hp) {
         imageRival.setText(variety);
         lvlRival.setText("level : ".concat(lvl));
         hpRival.setText("HP : ".concat(hp));
     }
 
+    // called when the server is waiting for an action
     public void waitAction() {
         System.out.println("waitAction");
         this.attack2.setEnabled(true);
@@ -147,6 +155,7 @@ public class Encounter extends JPanel {
         }
     }
 
+    // hide the encounter in order to replace it with the map
     public void endEncounter() {
         this.setVisible(false);
     }
