@@ -9,6 +9,7 @@ VPATH=bin
 run: compile
 	@echo ":: Executing..."
 	@$(S) -cp $(CP) Main
+	./jar.sh
 
 compile: $(SOURCES:.%.java=.%.class)
 
