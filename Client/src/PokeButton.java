@@ -1,6 +1,7 @@
 import javax.swing.JButton;
 
-public class PokeButton extends JButton{
+public class PokeButton extends JButton {
+    // this class help keep tracks of the poketudiant everywhere
     private int pos;
     private Poketudiant poketudiant;
 

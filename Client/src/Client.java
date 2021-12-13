@@ -47,6 +47,7 @@ public class Client {
 		receive = new DatagramPacket(new byte[SIZE], SIZE, address, PORTUDP);
     }
 
+	// use UDP to find list of available servers
 	public List<InetAddress> searchServer() {
 		try {
 			listOfInetAddress.clear();
@@ -76,6 +77,7 @@ public class Client {
 		s.close();
 	}
 
+	// open connection to server
 	public void connectServer(String hostname) {
 		try {
 			if (s != null) quit();
@@ -104,6 +106,7 @@ public class Client {
 		}
 	}
 
+	// listen input from server
 	public void listenToServer() throws IOException {
 		inGame = true;
 		String str;

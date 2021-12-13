@@ -37,6 +37,7 @@ public class Map extends JPanel{
                 
             }
 
+            // keep focus for the key listener
             @Override
             public void mouseEntered(MouseEvent me) {
                 requestFocus();
@@ -82,6 +83,7 @@ public class Map extends JPanel{
         gl.setRows(maxHeight);
         this.client = client;
         client.setMap(this);
+        // size of sprites
         int caseDim = 45;
 
         try {
@@ -133,6 +135,7 @@ public class Map extends JPanel{
     }
 
     public void locatePlayer(List<String> map, int width) {
+        // cannot be used properly because of a bug from the teacher's server
         if (!playerPos.equals(new Dimension(0, 0))) {
             System.out.println("playerPos exist");
             double widthPlayer = playerPos.getWidth();
@@ -157,7 +160,7 @@ public class Map extends JPanel{
     }
 
     public void drawMap(int width) {
-        // is getting called too many times i think
+        // is getting called too many times i think, by the teacher's server
         removeAll();
         if (getKeyListeners().length > 0) removeKeyListener(l);
         this.addKeyListener(l);
@@ -171,20 +174,22 @@ public class Map extends JPanel{
 
         int y = 1;
         int x = 1;
-        int factorX = (int) (playerPos.getWidth() / maxWidth);
-        int factorY = (int) (playerPos.getHeight() / maxHeight);
+        int factorX = (int) (playerPos.getWidth() / maxWidth); // count of screen passed on the X axis
+        int factorY = (int) (playerPos.getHeight() / maxHeight); // count of screen passed on the Y axis
 
         while (y % (maxHeight + 1) != 0) {
 
-            System.out.println((y - 1) + maxHeight * factorY);
+            //System.out.println((y - 1) + maxHeight * factorY);
             x = 1;
-            mapLine = map.get((y - 1) + maxHeight * factorY < height ? (y - 1) + maxHeight * factorY : height - 1);
+            mapLine = map.get((y - 1) + maxHeight * factorY < height ? (y - 1) + maxHeight * factorY : height - 1); // check if we are out of bounds
             y++;
 
             while (x % (maxWidth + 1) != 0) {
                 // System.out.println((x - 1) + maxWidth * factorX);
 
+                //if we are out of bounds we draw water
                 if ((x - 1) + maxWidth * factorX >= width || (y - 1) + maxHeight * factorY > height) picLabel = new JLabel(water);
+                // otherwise we draw the map received
                 else if ((mapLine.charAt((x - 1) + maxWidth * factorX)) == ' ') picLabel = new JLabel(grass);
                 else if ((mapLine.charAt((x - 1) + maxWidth * factorX)) == '*') picLabel = new JLabel(tallGrass);
                 else if ((mapLine.charAt((x - 1) + maxWidth * factorX)) == '+') picLabel = new JLabel(pokmnCenter);
