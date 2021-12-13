@@ -4,7 +4,7 @@ poketudiants = []
 statistics = []
 attacks = []
 
-def initializeRecords():
+def initializeRecords(): # import basic files
     templateRecords("poketudiants.csv",poketudiants)
     templateRecords("statistics.csv",statistics)
     templateRecords("attacks.csv",attacks)

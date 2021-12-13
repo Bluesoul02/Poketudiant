@@ -43,13 +43,13 @@ class Player:
             return True
         return False
 
-    def checkPoketudiantsStatus(self):
+    def checkPoketudiantsStatus(self): # check if the team is alive
         for p in self.poketudiants:
             if p.currentHP > 0:
                 return True
         return False
     
-    def sendPoketudiants(self):
+    def sendPoketudiants(self): # send poketudiant to the player
         self.client.send(("team contains " + str(len(self.poketudiants)) + "\n").encode('utf-8'))
         for p in self.poketudiants:
             poketudiant = str(p.variety) + " " + str(p.type) + " " + str(p.level) + " " + str(p.exp) + " " +  str(p.expLevel - p.exp) + " " + str(p.currentHP) + " " + str(p.maxHP) + " " + str(p.attack) + " " + str(p.defence)
@@ -57,7 +57,7 @@ class Player:
                 poketudiant += " " + str(a.name) + " " + str(a.type)
             self.client.send((poketudiant + "\n").encode('utf-8'))
         
-    def poketudiantMoveUp(self, indice):
+    def poketudiantMoveUp(self, indice): # manage the position of the poketudiant in the team
         if indice >= len(self.poketudiants) or indice == 0:
             return False
         temp = self.poketudiants[indice-1]
@@ -73,7 +73,7 @@ class Player:
         self.poketudiants[indice] = temp
         return True
 
-    def loseFight(self):
+    def loseFight(self): # retrieve xp to the poketudiant squad
         for p in self.poketudiants:
             p.loseXPFight()
 
@@ -84,7 +84,7 @@ class Player:
             self.poketudiants.pop(indice)
         return True
 
-    def sendMsgChat(self, clients, msg):
+    def sendMsgChat(self, clients, msg): # send message in the game
         message = "rival message " + str(self.client.getpeername()[0]) + " " + str(self.client.getpeername()[1]) + " : " + str(msg) + "\n"
         for c in clients:
             c.send((message + "\n").encode('utf-8'))
@@ -93,13 +93,13 @@ class Player:
         for p in self.poketudiants:
             p.getHealth()
             
-    def capturePoketudiant(self, poketudiant):
+    def capturePoketudiant(self, poketudiant): # add poketudiant to the team
         self.poketudiants.append(poketudiant)
 
     def __str__(self):
         return "%s" % (self.client)
 
-def createPlayer(client, game):
+def createPlayer(client, game): # create a player in the game
     player = Player(client, game.map.spawns[len(game.players)][0], game.map.spawns[len(game.players)][1], len(game.players)+1)
     player.poketudiants.append(createPoketudiant("Enseignant-dresseur"))
     return player

@@ -8,7 +8,7 @@ class Type(enum.Enum):
     MOTIVATED = 3
     TEACHER = 4
 
-class Attack:
+class Attack: # create an attack
     def __init__(self, name, type, power):
         self.name = name
         self.type = type
@@ -17,7 +17,7 @@ class Attack:
     def __str__(self):
         return "%s %s %s" % (self.name, self.type, self.power)
 
-class Poketudiant:
+class Poketudiant: # create a poketudiant
     def __init__(self, variety = None, type = None, level = None, expLevel = None, exp = None, currentHP = None, maxHP = None, attack = None, defence = None, attacks = [], isCatchable = False, isReleasable = False, evolution = None):
         self.variety = variety
         self.type = type
@@ -36,7 +36,7 @@ class Poketudiant:
         self.defenceFirstLevel = defence
         self.maxHPFirstLevel = maxHP
     
-    def loseXPFight(self):
+    def loseXPFight(self): # retrieve xp to a poketudiant
         totalExp = 0.2 * (self.calculExpTotal() + self.exp)
         while totalExp > 0:
             if (self.exp-totalExp < 0):
@@ -48,18 +48,18 @@ class Poketudiant:
                 self.exp -= int(totalExp)
                 break
 
-    def getHealth(self):
+    def getHealth(self): # heal the poketudiant
         self.currentHP = self.maxHP
     
-    def gainExp(self, exp, client, index):
+    def gainExp(self, exp, client, index): # get solme xp
         self.exp += exp
         client.send(("encounter poketudiant xp " + str(index) + " " + str(exp) + "\n").encode('utf-8'))
         if self.exp >= self.expLevel:
             self.levelUp(index, client)
 
     def levelUp(self, index=None, client=None):
-        if self.level < 10:
-            if client:
+        if self.level < 10: # can't get xp when your level is max
+            if client: # your poketudiant level up
                 client.send(("encounter poketudiant level " + str(index) + " " + str(1) + "\n").encode('utf-8'))
             self.level += 1
             self.expLevel = calculExp(self.level)
@@ -68,8 +68,8 @@ class Poketudiant:
             self.defence += int(self.defenceFirstLevel*0.1)
             self.attack += int(self.attackFirstLevel*0.1)
             self.getHealth()
-            if self.evolution != "None":
-                if (self.level == 3) and (random.uniform(0.0,100.0) <= 20.0):
+            if self.evolution != "None": # the poketudiant can evolve
+                if (self.level == 3) and (random.uniform(0.0,100.0) <= 20.0): # probability
                     if client:
                         client.send(("encounter poketudiant evolution " + str(index) + " " + self.evolution + "\n").encode('utf-8'))
                     self.getEvolution()
@@ -82,7 +82,7 @@ class Poketudiant:
                         client.send(("encounter poketudiant evolution " + str(index) + " " + self.evolution + "\n").encode('utf-8'))
                     self.getEvolution()
     
-    def getEvolution(self):
+    def getEvolution(self): # replace the poketudiant with his evolution
         self = createAndGain(self.evolution, self.level)
     
     def calculExpTotal(self):
@@ -94,7 +94,7 @@ class Poketudiant:
     def __str__(self):
         return "%s" % (self.variety)
 
-def calculStatsPoketudiants(stat):
+def calculStatsPoketudiants(stat): # random stats for an attack, a defence or a max hp
     down = stat * 0.9
     up = stat * 1.1
     if random.uniform(0,1) == 0:
@@ -105,7 +105,7 @@ def calculStatsPoketudiants(stat):
 def calculExp(level):
     return int(500 * ((1+level) / 2))
 
-def createPoketudiant(name):
+def createPoketudiant(name): # create a poketudiant via his name with the basic files
     starter = Poketudiant()
     starter.attacks = []
     exists = False
@@ -144,7 +144,7 @@ def createPoketudiant(name):
     starter.isReleasable = False if name == "Enseignant-dresseur" else True
     return starter
 
-def poketudiantManage(player, indice, text):
+def poketudiantManage(player, indice, text): # manage the poketudiant squad
     if (indice < 0) or (indice > 2):
         return False
     if text == "move up":
@@ -155,19 +155,19 @@ def poketudiantManage(player, indice, text):
         return player.poketudiantFree(indice)
     return False
 
-def createAndGain(name, level):
+def createAndGain(name, level): # create a poketudiant with some levels
     poketudiant = createPoketudiant(name)
     for i in range(1,level):
         poketudiant.levelUp()
     return poketudiant
 
-def poketudiantRandom(level):
+def poketudiantRandom(level): # create a random poketudiant except the enseignant-dresseur
     randomName = random.choice(poketudiants)["Variété"]
     while randomName == "Enseignant-dresseur":
         randomName = random.choice(poketudiants)["Variété"]
     levelUp = level
     leveDown = level
-    if level != 10:
+    if level != 10: # his level is approximatively the same level of the actual poketudiant of the player
     	levelUp = level + 1
     if level != 1:
     	leveDown = level - 1

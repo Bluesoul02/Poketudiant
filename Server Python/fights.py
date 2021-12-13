@@ -12,10 +12,10 @@ class Fight:
         self.hasAttacked = False
         self.forceChange = False
 
-def calculDamagePoketudiants(attack, defense, power):
+def calculDamagePoketudiants(attack, defense, power): # calcul the damage of the attack via statistics and probability
     return random.uniform(0.9,1.1) * (attack / defense) * power
 
-def calculPuissance(type1, type2, power):
+def calculPuissance(type1, type2, power): # calcul the attack power comparing the poketudiants type
     if type1 == "Noisy" and type2 == "Lazy":
         return power*2
     elif type1 == "Lazy" and type2 == "Motivated":
@@ -29,7 +29,7 @@ def calculPuissance(type1, type2, power):
 def probaCapture(pvEff, pvMax):
     return 2*max(0.5-(pvEff/pvMax),0)
 
-def probaFuite(poketudiant1, poketudiant2):
+def probaFuite(poketudiant1, poketudiant2): # probability of escape a fight with a wild poketudiant
     if (poketudiant1.level - poketudiant2.level) >= 3:
         return 1
     elif (poketudiant1.level - poketudiant2.level) <= -3:
