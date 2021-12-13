@@ -58,7 +58,7 @@ public class Menu extends JPanel {
         super.paintComponent(g);
         try {
             Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-            ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File("assets/pokmnCenter.png")));
+            ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File("assets/background.png")));
             Image image = imageIcon.getImage();
             Image rescaled = image.getScaledInstance(screensize.width, screensize.height, Image.SCALE_SMOOTH);
             g.drawImage(rescaled, 0, 0, screensize.width, screensize.height, this);
