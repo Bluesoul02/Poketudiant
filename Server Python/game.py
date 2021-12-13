@@ -66,45 +66,47 @@ def getNextPoketudiant(player): # get next poketudiant in a fight
         if player.poketudiants[i].currentHP > 0 :
             return i
 
-def actionEncounter(game,message,client):
+def actionEncounter(game,message,client): # action of a player in a fight
     fight = False
     player = getPlayer(game,client)
-    for f in fights:
+    for f in fights: # the fight structure of the other player if there is one
         if f.player == player:
             fight = f
     poketudiant = player.poketudiants[fight.poketudiant]
-    if message == "leave":
-        if probaFuite(player.poketudiants[fight.poketudiant],fight.poketudiantSauvage):
+    if message == "leave" and (not fight.rival): # the player wants to leave the fight
+        if probaFuite(player.poketudiants[fight.poketudiant],fight.poketudiantSauvage): # probability of escape
             player.client.send(("encounter escape ok\n").encode('utf-8'))
             player.endFight()
-            fights.remove(fight)
+            fights.remove(fight) # end of the fight
             return True
         else:
             player.client.send(("encounter escape fail\n").encode('utf-8'))
-    elif message == "catch":
-        if (probaCapture(fight.poketudiantSauvage.currentHP, fight.poketudiantSauvage.maxHP) >= 0.5):
-            player.capturePoketudiant(fight.poketudiantSauvage)
+    elif message == "catch" and (not fight.rival): # the player wants to catch the poketudiant
+        if (probaCapture(fight.poketudiantSauvage.currentHP, fight.poketudiantSauvage.maxHP) >= 0.5): # probability of catching it
+            player.capturePoketudiant(fight.poketudiantSauvage) # add it to his team
             player.client.send(("encounter catch ok\n").encode('utf-8'))
-            player.sendPoketudiants()
-            player.endFight()
+            player.sendPoketudiants() # send the new team
+            player.endFight() # end of the fight
             fights.remove(fight)
             return True
         else:
             player.client.send(("encounter catch fail\n").encode('utf-8'))
-    elif message == "switch":
+    elif message == "switch": # he wants to switch the actual poketudiant, send him the instruction
         fight.action = message
         player.client.send(("encounter enter poketudiant index\n").encode('utf-8'))
         return True
-    elif message == "attack1" or message == "attack2":
+    elif message == "attack1" or message == "attack2": # he wants to attack
         fight.action = message
-        if fight.rival:
+        if fight.rival: # manage the turns in the case of a fight against a rival
             manageTour(fight)
             return True
         else:
-            if fightAttack(message,poketudiant,fight):
+            if fightAttack(message,poketudiant,fight): # attack in the case of a wild poketudiant
                 return True
     else:
         player.client.send(("encounter forbidden action\n").encode('utf-8'))
+        if fight.rival:
+            return True
     if poketudiantRandomAttack(player,poketudiant,fight):
         return True
     player.client.send(("encounter enter action\n").encode('utf-8'))
@@ -226,7 +228,7 @@ def poketudiantRandomAttack(player,poketudiant,fight):
             return True
     return False
 
-def manageEncounter(game,data,client): # manage the action of the player(s) in a fight
+def manageEncounter(game,data,client): # manage the action of players in a fight
     if data[1].startswith('action') :
         actionEncounter(game,data[1].split(" ",1)[1],client) # an attack
     elif data[1].startswith('poketudiant index') : # change the current poketudiant
@@ -256,11 +258,11 @@ def manageEncounter(game,data,client): # manage the action of the player(s) in a
         else: # he can't change with a dead poketudiant
             player.client.send(("encounter enter poketudiant index\n").encode('utf-8'))
             return True
-        if fight.rival: # the wild poketudiant turn
+        if fight.rival: # the rival turn
             manageTour(fight)
             return True
         poketudiant = player.poketudiants[fight.poketudiant]
-        if (not fight.tempo) and poketudiantRandomAttack(player,poketudiant,fight): # the poketudiant attack
+        if (not fight.tempo) and poketudiantRandomAttack(player,poketudiant,fight): # the wild poketudiant attack
             return True
         fight.tempo = False
         player.client.send(("encounter enter action\n").encode('utf-8')) # send basic fight message to the player

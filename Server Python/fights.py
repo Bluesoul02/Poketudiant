@@ -10,7 +10,7 @@ class Fight:
         self.rival = rival
         self.action = ""
         self.hasAttacked = False
-        self.forceChange = False
+        self.forceChange = False # force to change the actual poketudiant, because the precedent is dead
 
 def calculDamagePoketudiants(attack, defense, power): # calcul the damage of the attack via statistics and probability
     return random.uniform(0.9,1.1) * (attack / defense) * power
