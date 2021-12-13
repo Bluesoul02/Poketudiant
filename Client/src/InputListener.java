@@ -13,6 +13,7 @@ public class InputListener implements KeyListener{
 
     @Override
     public synchronized void keyPressed(KeyEvent e) {
+        // timerTask and keyBindings would have been better
         long now = System.currentTimeMillis();
         System.out.println(now - last);
         if (now - last > threshold) {
